@@ -10,7 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -58,7 +57,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         // Hash방식의 암호화된 곳 사인값으로 확인
         // 올바르게 작동되었다면 token으로 만들 때 사용한 아이디값을 가져오게 된다.
-        String email = JWT.require(Algorithm.HMAC256(jwtProperties.SECRET)).build().verify(jwtToken).getClaim( "email").asString();
+        String email = JWT.require(Algorithm.HMAC512(jwtProperties.SECRET)).build().verify(jwtToken).getClaim( "email").asString();
 
         // 서명이 정상적으로 된 경우, User 존재가 맞는지 판단.
         // 로그인한 정보로 검증을 하는 것이 아니라, JWT token을 통해서 판단.

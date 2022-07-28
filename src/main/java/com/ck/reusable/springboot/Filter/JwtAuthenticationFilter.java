@@ -7,8 +7,6 @@ import com.ck.reusable.springboot.security.PrincipalDetails;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -105,7 +103,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                           .withExpiresAt(new Date(System.currentTimeMillis() + (jwtProperties.EXPIRATION_TIME)))
                                   .withClaim("id", userDetail.getUser().getMember_seq())
                                           .withClaim("email", userDetail.getUser().getEmail())
-                                                  .sign(Algorithm.HMAC256(jwtProperties.SECRET));
+                                                  .sign(Algorithm.HMAC512(jwtProperties.SECRET));
           response.addHeader(jwtProperties.HEADER_STRING, jwtProperties.TOKEN_PREFIX + JwtToken);
      }
 }
