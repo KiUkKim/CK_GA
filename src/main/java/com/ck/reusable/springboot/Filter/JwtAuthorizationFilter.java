@@ -51,31 +51,34 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        // JwtToken 을 검증해서 정상적인 사용자인지 확인
-        // Bearer [token값]으로 들어오는데 Bearer와 공백 한칸을 제외한 token값을 가져옴
-        String jwtToken = request.getHeader(jwtProperties.HEADER_STRING).replace(jwtProperties.TOKEN_PREFIX, "");
+        else{
+            // JwtToken 을 검증해서 정상적인 사용자인지 확인
+            // Bearer [token값]으로 들어오는데 Bearer와 공백 한칸을 제외한 token값을 가져옴
+            String jwtToken = request.getHeader(jwtProperties.HEADER_STRING).replace(jwtProperties.TOKEN_PREFIX, "");
 
-        // Hash방식의 암호화된 곳 사인값으로 확인
-        // 올바르게 작동되었다면 token으로 만들 때 사용한 아이디값을 가져오게 된다.
-        String email = JWT.require(Algorithm.HMAC256(jwtProperties.SECRET)).build().verify(jwtToken).getClaim( "email").asString();
+            // Hash방식의 암호화된 곳 사인값으로 확인
+            // 올바르게 작동되었다면 token으로 만들 때 사용한 아이디값을 가져오게 된다.
+            String email = JWT.require(Algorithm.HMAC256(jwtProperties.SECRET)).build().verify(jwtToken).getClaim( "email").asString();
 
-        // 서명이 정상적으로 된 경우, User 존재가 맞는지 판단.
-        // 로그인한 정보로 검증을 하는 것이 아니라, JWT token을 통해서 판단.
-        if(email != null)
-        {
-            User user = userRepository.findUserByEmail(email);
+            // 서명이 정상적으로 된 경우, User 존재가 맞는지 판단.
+            // 로그인한 정보로 검증을 하는 것이 아니라, JWT token을 통해서 판단.
+            if(email != null)
+            {
+                User user = userRepository.findUserByEmail(email);
 
-            PrincipalDetails principalDetails = new PrincipalDetails(user);
+                PrincipalDetails principalDetails = new PrincipalDetails(user);
 
-            // Email이 확실하다는 것은 - 정상적으로 로그인이 수행됐다는 뜻이므로 null [비밀번호 구간 ] 이 가능하다.
-            // Jwt 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 생성해준다.
-            Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
+                // Email이 확실하다는 것은 - 정상적으로 로그인이 수행됐다는 뜻이므로 null [비밀번호 구간 ] 이 가능하다.
+                // Jwt 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 생성해준다.
+                Authentication authentication =
+                        new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
 
-            // 강제로 시큐리티의 세션에 접근하여 Authentication 객체 저장
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                // 강제로 시큐리티의 세션에 접근하여 Authentication 객체 저장
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            chain.doFilter(request, response);
+                chain.doFilter(request, response);
+            }
         }
+
     }
 }
