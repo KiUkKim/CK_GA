@@ -47,7 +47,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         // Header가 존재하지 않는 값이거나, Bearer token이 아닐경우 ( 잘못된 토큰 값이 들어온 경우) filter로 걸러줌.
         if(jwtHeader == null || !jwtHeader.startsWith("Bearer"))
         {
-            chain.doFilter(request, response);
+//            chain.doFilter(request, response);
             return;
         }
 
