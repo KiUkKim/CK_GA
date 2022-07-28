@@ -97,13 +97,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
           System.out.println("successfulAuthentication 정상 작동 : 인증 완료");
           PrincipalDetails userDetail = (PrincipalDetails) authResult.getPrincipal();
 
+          Algorithm algorithm = Algorithm.HMAC256(jwtProperties.SECRET);
+
           // RSA방식이아니라 HASH 방식으로 일단 테스트
           String JwtToken = JWT.create()
                   .withIssuer(jwtProperties.TOKEN_ISSUR) // 토큰 유효시간 30분
                           .withExpiresAt(new Date(System.currentTimeMillis() + (jwtProperties.EXPIRATION_TIME)))
                                   .withClaim("id", userDetail.getUser().getMember_seq())
                                           .withClaim("email", userDetail.getUser().getEmail())
-                                                  .sign(Algorithm.HMAC256(jwtProperties.SECRET));
+                                                  .sign(algorithm);
           response.addHeader(jwtProperties.HEADER_STRING, jwtProperties.TOKEN_PREFIX + JwtToken);
      }
 }
