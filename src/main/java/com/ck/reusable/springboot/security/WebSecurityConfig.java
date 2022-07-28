@@ -50,8 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제
                 .authorizeRequests() // 요청에 대한 사용권한 체크
-//                .antMatchers("/","/auth/**","/login", "/member/*")////이 링크들은
-//                .permitAll()///허용한다
+                .antMatchers("/","/auth/**","/login", "/save")////이 링크들은
+                .permitAll()///허용한다
                 .antMatchers("/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
                 .antMatchers("/manager/**")

@@ -101,6 +101,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
           // RSA방식이아니라 HASH 방식으로 일단 테스트
           String JwtToken = JWT.create()
+                  .withSubject("tokenTest")
                   .withIssuer(jwtProperties.TOKEN_ISSUR) // 토큰 유효시간 30분
                           .withExpiresAt(new Date(System.currentTimeMillis() + (jwtProperties.EXPIRATION_TIME)))
                                   .withClaim("id", userDetail.getUser().getMember_seq())
