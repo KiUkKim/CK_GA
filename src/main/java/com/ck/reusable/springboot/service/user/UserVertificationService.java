@@ -5,9 +5,11 @@ import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
+@Service
 public class UserVertificationService {
 
     public String ckReusableAppNumCheck(String to){
