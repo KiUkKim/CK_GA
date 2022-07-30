@@ -64,14 +64,27 @@ public class UserApiController {
         return  new ResponseEntity<>(er2, HttpStatus.BAD_REQUEST);
     }
 
-    // 회원가입2
-    @PostMapping("/join")
-    public String join(@RequestBody User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRoles("ROLE_USER");
-        userRepository.save(user);
-        return "회원가입 완료";
+    // 이메일 중복 체크 (이미 인증된 전화번호 404 반환)
+    @PostMapping("/emailValidate")
+    @ResponseBody
+    public Object memberEmailCheck(@RequestBody UserDto.ForUserValidateDuplicateEmail duplicateEmail)
+    {
+        if(userService.validateDuplicated(duplicateEmail.getEmail()))
+        {
+            errorMessage2 er2 = errorMessage2.builder().message("중복된 이메일이 존재합니다.").status("409").build();
+
+            return new ResponseEntity<>(er2, HttpStatus.CONFLICT);
+        }
+
+        errorMessage2 er2 = errorMessage2.builder().message("중복된 이메일이 존재하지 않으므로 사용가능합니다.").status("200").build();
+
+        return new ResponseEntity<>(er2, HttpStatus.ACCEPTED);
     }
+
+
+    /*
+     TEST Logic
+     */
 
     // 권한 테스트
     @PostMapping("/api/v1/user")

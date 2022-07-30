@@ -112,4 +112,35 @@ public class UserDto {
                     .build();
         }
     }
+
+    //////////////////////// 중복 인증 관련 로직 /////////////////////////
+    /*
+        email 인증 중복 체크 검사
+     */
+    @Getter
+    @NoArgsConstructor
+    public static class ForUserValidateDuplicateEmail
+    {
+        private String email;
+
+        public ForUserValidateDuplicateEmail(User user)
+        {
+            this.email = user.getEmail();
+        }
+    }
+
+    /*
+        전화번호 인증 중복 체크 검사
+     */
+    @Getter
+    @NoArgsConstructor
+    public static class ForUserValidateDuplicateTel
+    {
+        private String tel;
+
+        public ForUserValidateDuplicateTel(User user)
+        {
+            this.tel = user.getTel();
+        }
+    }
 }

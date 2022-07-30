@@ -63,20 +63,16 @@ public class UserService {
     /*
     로그인 처리 시켜야함
      */
-//    public UserDto.ForUserResponseDto LoginMember(UserDto.ForUserLoginRequestDto forUserLoginDto)
-//    {
-//        User user = userRepository.findUserByEmail(forUserLoginDto.getEmail());
-//
-//        Assert.notNull(user, "user is must not be null");
-//
-//        if (!passwordEncoder.matches(forUserLoginDto.getPasswd(), user.getPassword()))
-//        {
-//            throw new HTTPException(400);
-//        }
-//
-//        String accessToken = jwtTokenProvider.createToken(forUserLoginDto.getEmail());
-//        return new UserDto.ForUserLoginResponseDto(user.getEmail(), accessToken);
-//    }
+
+    /*
+    전화번호 중복 방지
+     */
+    public boolean validateDuplicatedTel(String tel){
+        if(userRepository.findByTel(tel).isPresent()){
+            return true;
+        }
+        return false;
+    }
 
 
     /*
