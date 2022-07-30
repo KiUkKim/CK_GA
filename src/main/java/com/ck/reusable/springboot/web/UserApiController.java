@@ -2,9 +2,11 @@ package com.ck.reusable.springboot.web;
 
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage;
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage2;
+import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage3;
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.service.user.UserService;
+import com.ck.reusable.springboot.service.user.UserVertificationService;
 import com.ck.reusable.springboot.web.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,20 +25,9 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class UserApiController {
 
-    @GetMapping("/home")
-    public String test()
-    {
-        return "<h1>home<h1>";
-    }
-
-    @PostMapping("/token")
-    public String test2(){return "<h1>token<h1>";}
-
     private final UserService userService;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    private final UserRepository userRepository;
+    private final UserVertificationService vertificationService;
 
 //     회원가입
     @PostMapping("/save")
@@ -62,6 +53,26 @@ public class UserApiController {
         errorMessage2 er2 = errorMessage2.builder().status("404").message("회원가입이 중복되었습니다.").build();
 
         return  new ResponseEntity<>(er2, HttpStatus.BAD_REQUEST);
+    }
+
+    // 메시지 보내는 api
+    @PostMapping("/phoneCheck")
+    public @ResponseBody Object memberPhoneCheck(@RequestBody UserDto.ForUserValidateDuplicateTel duplicateTel){
+
+        if(userService.validateDuplicatedTel(duplicateTel.getTel()))
+        {
+            errorMessage3 er3 = errorMessage3.builder().message("중복된 전화번호가 존재합니다.").status("409").numStr("중복된 전화번호").build();
+
+            return new ResponseEntity<>(er3, HttpStatus.CONFLICT);
+        }
+
+        String to = vertificationService.ckReusableAppNumCheck(duplicateTel.getTel());
+
+        String numStr =  vertificationService.ckReusableAppNumCheck(to);
+
+        errorMessage3 er3 = errorMessage3.builder().message("회원가입 가능한 전화번호").status("200").numStr(numStr).build();
+
+        return new ResponseEntity<>(er3, HttpStatus.ACCEPTED);
     }
 
     // 이메일 중복 체크 (이미 인증된 전화번호 404 반환)

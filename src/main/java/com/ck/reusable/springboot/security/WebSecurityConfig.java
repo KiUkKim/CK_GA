@@ -49,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager())) // crossorigin(인증 필요x ) , 시큐리티 필터에 인증이 필요할 때 등록
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository)) // Authorization Filter
                 .authorizeRequests() // 요청에 대한 사용권한 체크
-                .antMatchers("/","/auth/**","/login", "/save")////이 링크들은
+                .antMatchers("/","/auth/**","/login", "/save", "/phoneCheck")////이 링크들은
                 .permitAll()///허용한다
                 .antMatchers("/user/**")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
