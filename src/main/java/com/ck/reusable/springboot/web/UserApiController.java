@@ -66,7 +66,7 @@ public class UserApiController {
             return new ResponseEntity<>(er3, HttpStatus.CONFLICT);
         }
 
-        String to = vertificationService.ckReusableAppNumCheck(duplicateTel.getTel());
+        String to = duplicateTel.getTel();
 
         String numStr =  vertificationService.ckReusableAppNumCheck(to);
 
