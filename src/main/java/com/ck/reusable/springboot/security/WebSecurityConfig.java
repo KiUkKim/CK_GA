@@ -5,7 +5,7 @@ import com.ck.reusable.springboot.Filter.JwtAuthorizationFilter;
 import com.ck.reusable.springboot.domain.user.RefreshJwtRepository;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
-import com.ck.reusable.springboot.web.jwt.jwtService;
+import com.ck.reusable.springboot.service.user.jwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

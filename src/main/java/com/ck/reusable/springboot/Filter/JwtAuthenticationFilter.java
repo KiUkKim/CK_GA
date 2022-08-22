@@ -6,7 +6,7 @@ import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.security.PrincipalDetails;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
-import com.ck.reusable.springboot.web.jwt.jwtService;
+import com.ck.reusable.springboot.service.user.jwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

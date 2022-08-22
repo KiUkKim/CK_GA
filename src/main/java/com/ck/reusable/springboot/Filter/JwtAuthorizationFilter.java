@@ -9,7 +9,7 @@ import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.security.PrincipalDetails;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
-import com.ck.reusable.springboot.web.jwt.jwtService;
+import com.ck.reusable.springboot.service.user.jwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
