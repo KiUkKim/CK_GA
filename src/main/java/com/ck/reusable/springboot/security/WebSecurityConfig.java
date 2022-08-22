@@ -4,6 +4,7 @@ import com.ck.reusable.springboot.Filter.Filter1;
 import com.ck.reusable.springboot.Filter.JwtAuthenticationFilter;
 import com.ck.reusable.springboot.Filter.JwtAuthorizationFilter;
 import com.ck.reusable.springboot.domain.user.UserRepository;
+import com.ck.reusable.springboot.service.user.jwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserRepository userRepository;
 
+    private final jwtService jwtService;
+
     // authenticationManager를 Bean 등록합니다.
     @Bean
     @Override
@@ -46,8 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제
-                .addFilter(new JwtAuthenticationFilter(authenticationManager())) // crossorigin(인증 필요x ) , 시큐리티 필터에 인증이 필요할 때 등록
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository)) // Authorization Filter
+                .addFilter(new JwtAuthenticationFilter(jwtService)) // crossorigin(인증 필요x ) , 시큐리티 필터에 인증이 필요할 때 등록
+//                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository)) // Authorization Filter
                 .authorizeRequests() // 요청에 대한 사용권한 체크
                 .antMatchers("/","/auth/**","/login", "/save", "/phoneCheck", "/emailValidate")////이 링크들은
                 .permitAll()///허용한다

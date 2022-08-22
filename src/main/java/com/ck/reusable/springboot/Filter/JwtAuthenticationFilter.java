@@ -1,9 +1,8 @@
 package com.ck.reusable.springboot.Filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.security.PrincipalDetails;
+import com.ck.reusable.springboot.service.user.jwtService;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.Assert;
 
@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 // 스프링 시큐리티 정책
 // login 요청해서 username, password 전송하면 (post)
@@ -27,9 +26,17 @@ import java.util.Date;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-     private final AuthenticationManager authenticationManager;
 
      private JwtProperties jwtProperties;
+
+     private AuthenticationManager authenticationManager;
+     
+     private jwtService jwtservice;
+
+     public JwtAuthenticationFilter(jwtService jwtservice)
+     {
+          this.jwtservice = jwtservice;
+     }
 
      // login 요청을 하면 실행되는 함수
      @Override
@@ -97,16 +104,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
           System.out.println("successfulAuthentication 정상 작동 : 인증 완료");
           PrincipalDetails userDetail = (PrincipalDetails) authResult.getPrincipal();
 
-          Algorithm algorithm = Algorithm.HMAC256(jwtProperties.SECRET);
-
           // RSA방식이아니라 HASH 방식으로 일단 테스트
-          String JwtToken = JWT.create()
-                  .withSubject("tokenTest")
-                  .withIssuer(jwtProperties.TOKEN_ISSUR) // 토큰 유효시간 30분
-                          .withExpiresAt(new Date(System.currentTimeMillis() + (jwtProperties.EXPIRATION_TIME)))
-                                  .withClaim("id", userDetail.getUser().getMember_seq())
-                                          .withClaim("email", userDetail.getUser().getEmail())
-                                                  .sign(algorithm);
+          String JwtToken = jwtservice.getJwtToken(userDetail.getUser().getMember_seq(), userDetail.getUser().getEmail());
+
           response.addHeader(jwtProperties.HEADER_STRING, jwtProperties.TOKEN_PREFIX + JwtToken);
      }
 }

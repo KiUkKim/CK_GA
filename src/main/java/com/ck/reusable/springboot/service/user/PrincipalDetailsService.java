@@ -21,10 +21,10 @@ public class PrincipalDetailsService implements UserDetailsService {
         System.out.println("CustomUserDatilService의 loadUserByUserName()");
         User user = userRepository.findUserByEmail(username);
 
-//        if(user == null)
-//        {
-//            throw new UsernameNotFoundException("존재하지 않습니다.");
-//        }
+        if(user == null)
+        {
+            throw new UsernameNotFoundException("존재하지 않습니다.");
+        }
 
         System.out.println("userEntity : " + user);
 
