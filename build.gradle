@@ -57,8 +57,7 @@ dependencies {
     //testCompile("org.springframework.security:spring-security-test")
     testCompile('org.assertj:assertj-core:3.22.0')
 
-
-
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 }
 
 test {
