@@ -1,16 +1,19 @@
 package com.ck.reusable.springboot.Filter;
 
+import com.auth0.jwt.algorithms.Algorithm;
+import com.ck.reusable.springboot.domain.user.RefreshJwt;
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.security.PrincipalDetails;
-import com.ck.reusable.springboot.service.user.jwtService;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
+import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
+import com.ck.reusable.springboot.web.jwt.jwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.Assert;
 
@@ -19,23 +22,29 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 // 스프링 시큐리티 정책
 // login 요청해서 username, password 전송하면 (post)
 // UsernamePasswordAuthenticationFilter 동작함
-
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
      private JwtProperties jwtProperties;
 
-     private AuthenticationManager authenticationManager;
-     
-     private jwtService jwtservice;
+     private final AuthenticationManager authenticationManager;
 
-     public JwtAuthenticationFilter(jwtService jwtservice)
+     @Autowired
+     private jwtService jwtService;
+
+     @Autowired
+     private jwtCookieUtilService jwtCookieUtilService;
+
+     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, jwtService jwtService)
      {
-          this.jwtservice = jwtservice;
+          this.jwtService = jwtService;
+          this.authenticationManager = authenticationManager;
      }
 
      // login 요청을 하면 실행되는 함수
@@ -45,22 +54,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
           // 1. email,password 받아서
           try{
-               /*
-               JSON 형식으로 찍기
-                */
-//               BufferedReader br = request.getReader();
-//
-//               String input = null;
-//               while((input = br.readLine())  != null )
-//               {
-//                    System.out.println(input);
-//               }
                ObjectMapper om = new ObjectMapper();
                User user = om.readValue(request.getInputStream(), User.class);
                System.out.println(user);
 
                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-
+//
                System.out.println("authenticationToken : " + authenticationToken);
                Assert.notNull(authenticationToken, "autenticationToken is must not be null");
 
@@ -104,9 +103,29 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
           System.out.println("successfulAuthentication 정상 작동 : 인증 완료");
           PrincipalDetails userDetail = (PrincipalDetails) authResult.getPrincipal();
 
+          System.out.println("1============= 엑세스 토큰 제작");
+          Algorithm algorithm = Algorithm.HMAC256(jwtProperties.SECRET);
+          // 토큰 제작
           // RSA방식이아니라 HASH 방식으로 일단 테스트
-          String JwtToken = jwtservice.getJwtToken(userDetail.getUser().getMember_seq(), userDetail.getUser().getEmail());
+          String JwtToken = jwtService.getJwtToken(userDetail.getUser().getMember_seq(), userDetail.getUser().getEmail());
+
+          System.out.println("2============= 리프레쉬 토큰 제작");
+          // 리프레시 토큰 제작
+//          String refreshToken2 = jwtService.getJwtToken();
+          RefreshJwt refreshToken = jwtService.getRefreshToken(userDetail.getUser().getMember_seq());
+
+//          jwtService.insertRefreshToken(refreshToken, userDetail.getUser().getMember_seq());
 
           response.addHeader(jwtProperties.HEADER_STRING, jwtProperties.TOKEN_PREFIX + JwtToken);
+          response.addHeader(jwtProperties.REFRESH_STRING, jwtProperties.TOKEN_PREFIX + jwtService.getRefreshToken(refreshToken, userDetail.getUser().getMember_seq()));
+
+          // Cookie 값에 넣어주기 위해서 한번 더 찾아주기
+          String refreshJwt = jwtService.getRefreshTokenId(userDetail.getUser().getMember_seq());
+
+          Map<String, Object> accessTokenCookie = new HashMap<>();
+
+          accessTokenCookie.put("Authorization", refreshJwt);
+
+          jwtCookieUtilService.TokenToCookie(accessTokenCookie, response);
      }
 }
