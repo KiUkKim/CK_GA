@@ -116,8 +116,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 //          jwtService.insertRefreshToken(refreshToken, userDetail.getUser().getMember_seq());
 
-          response.addHeader(jwtProperties.HEADER_STRING, jwtProperties.TOKEN_PREFIX + JwtToken);
-          response.addHeader(jwtProperties.REFRESH_STRING, jwtProperties.TOKEN_PREFIX + jwtService.getRefreshToken(refreshToken, userDetail.getUser().getMember_seq()));
+          response.addHeader(jwtProperties.HEADER_STRING, JwtToken);
+          response.addHeader(jwtProperties.REFRESH_STRING, jwtService.getRefreshToken(refreshToken, userDetail.getUser().getMember_seq()));
 
           // Cookie 값에 넣어주기 위해서 한번 더 찾아주기
           String refreshJwt = jwtService.getRefreshTokenId(userDetail.getUser().getMember_seq());

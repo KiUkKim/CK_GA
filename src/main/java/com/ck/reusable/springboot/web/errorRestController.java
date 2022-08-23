@@ -73,8 +73,12 @@ public class errorRestController {
 
             JSONObject jsonObject = new JSONObject();
 
-            jsonObject.put("Authorization", "Bearer " + newJwtToken);
-            jsonObject.put("RefreshToken",  "Bearer " + refreshToken);
+            jsonObject.put("Authorization", newJwtToken);
+            jsonObject.put("RefreshToken",  refreshToken);
+            jsonObject.put("message" , "토큰 값이 업데이트 갱신되었습니다.");
+
+            response.addHeader("Authorization", newJwtToken);
+            response.addHeader("RefreshToken",  refreshToken);
 
             return jsonObject;
         }

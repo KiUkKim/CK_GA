@@ -151,7 +151,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 refreshToken = jwtService.getJwtToken();
                 jwtService.insertRefreshToken(refreshToken, id);
                 logger.info("새로운 리프레시 토큰 : " + refreshToken);
-                response.addHeader(jwtProperties.REFRESH_STRING, jwtProperties.TOKEN_PREFIX + refreshToken);
+                response.addHeader(jwtProperties.REFRESH_STRING, refreshToken);
             }
             // 기간 안지났다면 그대로 진행. (refresh token 그대로 진행)
 
