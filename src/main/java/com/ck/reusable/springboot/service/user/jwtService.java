@@ -38,7 +38,7 @@ public class jwtService{
         }
     }
 
-    private boolean checkRefreshTokenValidity(Timestamp refreshTokenDate)
+    public boolean checkRefreshTokenValidity(Timestamp refreshTokenDate)
     {
         return cookieUtilService.checkDate(refreshTokenDate);
     }
@@ -48,6 +48,18 @@ public class jwtService{
         System.out.println("기한 만료로 deleteRefreshToken 함수 실행");
         try {
             refreshJwtRepository.delete(refreshJwt);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Transactional
+    public void deleteRefreshToken2(String refreshJwt)
+    {
+        System.out.println("기한 만료로 deleteRefreshToken2 함수 실행");
+        try {
+            refreshJwtRepository.deleteToken(refreshJwt);
         }catch (Exception e)
         {
             e.printStackTrace();

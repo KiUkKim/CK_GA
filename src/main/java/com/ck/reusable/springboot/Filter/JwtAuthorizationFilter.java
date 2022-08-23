@@ -3,6 +3,7 @@ package com.ck.reusable.springboot.Filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.ck.reusable.springboot.domain.user.RefreshJwt;
 import com.ck.reusable.springboot.domain.user.RefreshJwtRepository;
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
@@ -10,6 +11,7 @@ import com.ck.reusable.springboot.security.PrincipalDetails;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
 import com.ck.reusable.springboot.service.user.jwtService;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -131,11 +135,27 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 //            Long id = jwtService.getRefreshTokenId(refreshToken);
 
+            logger.info("리프레쉬 토큰 id " + id);
+
             String email = Optional.ofNullable(userRepository.findEmailByUser_id(id)).orElseGet(()->null);
 
             logger.info("refresh token으로 찾은 이메일 : " + email);
 
-            if(refreshToken== null || email == null)
+            Timestamp getCreated = jwtRepository.findDateTime(refreshToken);
+
+            // 토큰 유효성 검증
+            // 기간 지났으면 재발급
+            if(jwtService.checkRefreshTokenValidity(getCreated))
+            {
+                jwtService.deleteRefreshToken2(refreshToken);
+                refreshToken = jwtService.getJwtToken();
+                jwtService.insertRefreshToken(refreshToken, id);
+                logger.info("새로운 리프레시 토큰 : " + refreshToken);
+                response.addHeader(jwtProperties.REFRESH_STRING, jwtProperties.TOKEN_PREFIX + refreshToken);
+            }
+            // 기간 안지났다면 그대로 진행. (refresh token 그대로 진행)
+
+            if(refreshToken == null || email == null)
             {
                 jwtCookieUtilService.goForward("/tokenExpire/X", request, response);
                 return;

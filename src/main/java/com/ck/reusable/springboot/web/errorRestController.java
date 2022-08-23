@@ -31,21 +31,29 @@ public class errorRestController {
         throw new TokenExpiredException(null, null);
     }
 
+//    @RequestMapping("/refreshTokenReissue")
+//    public Object reIssue(HttpServletRequest request, HttpServletResponse response)
+//    {
+//        System.out.println("refreshTokenReissue");
+//
+//
+//    }
+
     @RequestMapping("/tokenExpire/X")
     public Object error(HttpServletRequest request, HttpServletResponse response)
     {
         System.out.println("/tokenExpire/X");
 
-        errorMessage4 errorMessage4 = new errorMessage4();
-
         String accessToken = request.getHeader("Authorization");
 
         String refreshToken = request.getHeader("RefreshToken");
 
-        errorMessage4.builder().message("토큰의 값이 유효하지 않습니다.").status("403").
-                refreshToken(refreshToken).accessToken(accessToken).build();
+        System.out.println(accessToken);
 
-        return new ResponseEntity<>(errorMessage4, HttpStatus.FORBIDDEN);
+        errorMessage4 er4 = errorMessage4.builder().message("토큰의 값이 유효하지 않습니다.").status("403").
+                refreshToken(accessToken).accessToken(refreshToken).build();
+
+        return new ResponseEntity<>(er4, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(TokenExpiredException.class)
@@ -65,8 +73,8 @@ public class errorRestController {
 
             JSONObject jsonObject = new JSONObject();
 
-            jsonObject.put("Authorization", newJwtToken);
-            jsonObject.put("RefreshToken", refreshToken);
+            jsonObject.put("Authorization", "Bearer " + newJwtToken);
+            jsonObject.put("RefreshToken",  "Bearer " + refreshToken);
 
             return jsonObject;
         }

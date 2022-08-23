@@ -43,7 +43,7 @@ public class jwtCookieUtilService {
 
         // 오늘 날짜에 토큰 기한 계산
         timestamp2 = timestamp2.plusDays(14);
-//        timestamp2 = timestamp2.plusMinutes(1);
+//        timestamp2 = timestamp2.plusMinutes(3);
 
         // 오늘 날짜 계산
         LocalDateTime today = LocalDateTime.now();

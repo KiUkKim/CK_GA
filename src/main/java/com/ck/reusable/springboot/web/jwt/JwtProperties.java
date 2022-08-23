@@ -9,5 +9,5 @@ public interface JwtProperties {
     String REFRESH_STRING = "RefreshToken";
     String TOKEN_ISSUR = "https://ck-reusableapp.herokuapp.com/";
     int EXPIRATION_REFRESH_TIME = 600000 * 6  * 24 * 14;//(10분 * 6 * 24 = 1440분 하루 * 14 ==> 14일)
-//    int EXPIRATION_REFRESH_TIME = 6000;//(1분 *  = 300분 하루 - 60분 * 12 = 720분)
+//    int EXPIRATION_REFRESH_TIME = 6000 * 3;//(1분 *  = 300분 하루 - 60분 * 12 = 720분)
 }
