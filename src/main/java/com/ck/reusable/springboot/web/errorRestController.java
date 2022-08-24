@@ -2,7 +2,11 @@ package com.ck.reusable.springboot.web;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage4;
+import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage5;
+import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage6;
+import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage7;
 import com.ck.reusable.springboot.domain.user.RefreshJwt;
+import com.ck.reusable.springboot.domain.user.RefreshJwtRepository;
 import com.ck.reusable.springboot.service.user.jwtService;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,8 @@ public class errorRestController {
 
     private final jwtService jwtService;
 
+    private final RefreshJwtRepository jwtRepository;
+
     @RequestMapping("/tokenExpire/Y")
     public void name(HttpServletRequest request, HttpServletResponse response)
     {
@@ -31,13 +37,39 @@ public class errorRestController {
         throw new TokenExpiredException(null, null);
     }
 
-//    @RequestMapping("/refreshTokenReissue")
-//    public Object reIssue(HttpServletRequest request, HttpServletResponse response)
-//    {
-//        System.out.println("refreshTokenReissue");
-//
-//
-//    }
+    // RefreshToken 이 안담겨 있을 경우 처리
+    @RequestMapping("/refreshTokenValidation/X")
+    public Object refreshTokenValidation(HttpServletRequest request, HttpServletResponse response)
+    {
+        System.out.println("/refreshTokenValidation/X");
+
+        String refreshToken = request.getHeader("RefreshToken");
+
+        String accessToken = request.getHeader("Authorization");
+
+        errorMessage6 er6 = errorMessage6.builder().accessToken(accessToken).refreshToken(refreshToken).status("403")
+                .message("AccessToken이 만료되었습니다. RefreshToken을 이욯해서 다시 요청하세요")
+                .url("/refreshTokenValidation/X").build();
+
+        return new ResponseEntity<>(er6, HttpStatus.FORBIDDEN);
+    }
+
+
+
+    //TODO
+    // RefreshToken 만료에 대한 처리
+    @RequestMapping("/RefreshTokenExpire/Y")
+    public Object RefreshTokenExpire(HttpServletRequest request, HttpServletResponse response)
+    {
+        String refreshToken = request.getHeader("RefreshToken");
+
+        errorMessage7 er7 = errorMessage7.builder().refreshToken(refreshToken)
+                .message("해당 RefreshToken 만료되었습니다. 다시 로그인해주세요.").status("403")
+                .url("/RefreshTokenExpire/Y").build();
+
+        return new ResponseEntity<>(er7, HttpStatus.FORBIDDEN);
+    }
+
 
     @RequestMapping("/tokenExpire/X")
     public Object error(HttpServletRequest request, HttpServletResponse response)
@@ -75,10 +107,9 @@ public class errorRestController {
 
             jsonObject.put("Authorization", newJwtToken);
             jsonObject.put("RefreshToken",  refreshToken);
-            jsonObject.put("message" , "토큰 값이 업데이트 갱신되었습니다.");
+            jsonObject.put("message" , "액세스토큰 값이 업데이트 되었습니다.");
 
             response.addHeader("Authorization", newJwtToken);
-            response.addHeader("RefreshToken",  refreshToken);
 
             return jsonObject;
         }

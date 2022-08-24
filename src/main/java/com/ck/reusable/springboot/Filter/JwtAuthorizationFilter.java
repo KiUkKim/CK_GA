@@ -3,6 +3,7 @@ package com.ck.reusable.springboot.Filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage2;
 import com.ck.reusable.springboot.domain.user.RefreshJwt;
 import com.ck.reusable.springboot.domain.user.RefreshJwtRepository;
 import com.ck.reusable.springboot.domain.user.User;
@@ -12,6 +13,8 @@ import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
 import com.ck.reusable.springboot.service.user.jwtService;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -125,7 +128,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             logger.info("만료된 엑세스 토큰 : " + jwtToken);
 
             // 리프레쉬 토큰 꺼내기
-            String refreshToken = Optional.ofNullable(request.getHeader(refreshTokenName).replace(jwtProperties.TOKEN_PREFIX, "")).orElseGet(()->null);
+            String refreshToken = Optional.ofNullable(request.getHeader(refreshTokenName)).orElseGet(()->null);
+//            String refreshToken = request.getHeader(refreshTokenName).replace(jwtProperties.TOKEN_PREFIX, "");
+
+            // refreshToken 을 담지 않았다면 담으라는 요청.
+            if(refreshToken == null)
+            {
+                jwtCookieUtilService.goForward("/refreshTokenValidation/X", request, response);
+                return;
+            }
+
+            refreshToken = Optional.ofNullable(refreshToken.replace(jwtProperties.TOKEN_PREFIX, "")).orElseGet(()->null);
 
             logger.info("리프레쉬 토큰 : " + refreshToken);
 
@@ -139,27 +152,32 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             String email = Optional.ofNullable(userRepository.findEmailByUser_id(id)).orElseGet(()->null);
 
+            // 유효하지 않은 refreshToken 값
+            if(email==null)
+        {
+            jwtCookieUtilService.goForward("/tokenExpire/X", request, response);
+            return;
+        }
+
             logger.info("refresh token으로 찾은 이메일 : " + email);
 
             Timestamp getCreated = jwtRepository.findDateTime(refreshToken);
 
+
             // 토큰 유효성 검증
-            // 기간 지났으면 재발급
+            // 기간 지났으면 재로그인 요청
             if(jwtService.checkRefreshTokenValidity(getCreated))
             {
-                jwtService.deleteRefreshToken2(refreshToken);
-                refreshToken = jwtService.getJwtToken();
-                jwtService.insertRefreshToken(refreshToken, id);
-                logger.info("새로운 리프레시 토큰 : " + refreshToken);
-                response.addHeader(jwtProperties.REFRESH_STRING, refreshToken);
+                logger.info("================================리프레시 토큰 만료");
+                logger.info("요청 url : /RefreshTokenExpire/Y");
+                jwtCookieUtilService.goForward("/RefreshTokenExpire/Y", request, response);
+                return;
+//                jwtService.deleteRefreshToken2(refreshToken);
+//                refreshToken = jwtService.getJwtToken();
+//                jwtService.insertRefreshToken(refreshToken, id);
+//                response.addHeader(jwtProperties.REFRESH_STRING, refreshToken);
             }
             // 기간 안지났다면 그대로 진행. (refresh token 그대로 진행)
-
-            if(refreshToken == null || email == null)
-            {
-                jwtCookieUtilService.goForward("/tokenExpire/X", request, response);
-                return;
-            }
 
             // 새 엑서스 토큰 발급 ( 예외 처리 후, 받아오기
             String accessToken= jwtService.get_access_token(email);
