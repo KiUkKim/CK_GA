@@ -7,6 +7,7 @@ import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.service.user.UserService;
 import com.ck.reusable.springboot.service.user.UserVertificationService;
+import com.ck.reusable.springboot.web.dto.QrDto;
 import com.ck.reusable.springboot.web.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import org.testng.Assert;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -97,11 +100,35 @@ public class UserApiController {
      TEST Logic
      */
 
+    /*
+    User 정보 출력
+     */
+    @GetMapping("/user/userInfo")
+    public List<UserDto.ForUserTokenResponseDto> searchLoginUser(Principal principal)
+    {
+        return userService.searchUserByEmail(principal.getName());
+    }
+
+    @GetMapping("/user/test")
+    public String test(Principal principal)
+    {
+        return principal.getName();
+    }
+
     // 권한 테스트
     @PostMapping("/api/v1/user")
     public String test1()
     {
         return "user";
     }
+
+    @PostMapping("/user/qr")
+    @ResponseBody
+    public QrDto.ForQrResponseDto CupRent(@RequestBody QrDto.ForQrResponseDto qrResponseDto)
+    {
+        return qrResponseDto;
+    }
+
+
 
 }

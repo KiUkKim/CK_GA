@@ -36,7 +36,10 @@ import java.util.Optional;
 // 시큐리티가 filter 중 BasicAuthenticationFilter 구현
 // 권한 인증이 필요한 구간은 해당 필터를 타게 되어있음
 // 권한 인증 필요한 구간 x -> 해당 필터 안탐
-@RestController
+
+//TODO
+// RestController를 여기에도 사용하면 2번 조회함.
+//@RestController
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final UserRepository userRepository;
@@ -197,7 +200,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         logger.info("인증필터 통과");
-        chain.doFilter(request, response);
+
+        //TODO
+        // chain을 쓰면 조회를 2번하게 되는 경우 발생 -> 왜 그런지 공부하기!
+//        chain.doFilter(request, response);
     }
 
 }
