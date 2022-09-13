@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -37,6 +40,8 @@ public class UserService {
         System.out.println(password);
 
         listResponseDto.setRoles("ROLE_USER");
+        listResponseDto.setNow_cnt(0);
+        listResponseDto.setTotal_cnt(0);
         listResponseDto.setPassword(bCryptPasswordEncoder.encode(forUserDto.getPasswd()));
 
         Assert.assertNotNull(listResponseDto.getPassword(), "Password is not null");
@@ -82,6 +87,16 @@ public class UserService {
     {
         return userRepository.findUserByEmail(email);
     }
+
+    // 특정 User 정보 출력
+    @Transactional
+    public List<UserDto.ForUserTokenResponseDto> searchUserByEmail(String email)
+    {
+        return userRepository.findUserInfoByEmail(email).stream()
+                .map(UserDto.ForUserTokenResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
 
 
 }

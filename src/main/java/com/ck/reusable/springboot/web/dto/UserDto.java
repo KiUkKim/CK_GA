@@ -14,21 +14,21 @@ public class UserDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class ForUserSignRequestDto{
+    public static class ForUserSignRequestDto {
         private String name;
         private String email;
         private String tel;
         private String passwd;
 
         @Builder
-        public ForUserSignRequestDto(String name, String email, String tel, String passwd){
+        public ForUserSignRequestDto(String name, String email, String tel, String passwd) {
             this.name = name;
             this.email = email;
             this.tel = tel;
             this.passwd = passwd;
         }
 
-        public User toEntity(){
+        public User toEntity() {
             return User.builder()
                     .name(name)
                     .email(email)
@@ -41,14 +41,13 @@ public class UserDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class ForUserResponseDto{
+    public static class ForUserResponseDto {
         private Long member_seq;
         private String name;
         private String email;
         private String tel;
 
-        public ForUserResponseDto(User user)
-        {
+        public ForUserResponseDto(User user) {
             this.member_seq = user.getMember_seq();
             this.name = user.getName();
             this.email = user.getEmail();
@@ -59,12 +58,11 @@ public class UserDto {
 
     @Getter
     @NoArgsConstructor
-    public static class ForUserLoginRequestDto{
+    public static class ForUserLoginRequestDto {
         private String email;
         private String passwd;
 
-        public ForUserLoginRequestDto(User entity)
-        {
+        public ForUserLoginRequestDto(User entity) {
             this.email = entity.getEmail();
             this.passwd = entity.getPassword();
         }
@@ -72,12 +70,11 @@ public class UserDto {
 
     @Getter
     @NoArgsConstructor
-    public static class ForUserLoginResponseDto{
+    public static class ForUserLoginResponseDto {
         private String email;
         private String accessToken;
 
-        public ForUserLoginResponseDto(User entity, String tokenProvider)
-        {
+        public ForUserLoginResponseDto(User entity, String tokenProvider) {
             this.email = entity.getEmail();
             this.accessToken = tokenProvider;
         }
@@ -86,29 +83,34 @@ public class UserDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class ForUserListResponseDto{
+    public static class ForUserListResponseDto {
         private String name;
         private String tel;
         private String email;
         private String roles;
         private String password;
+        private Integer now_cnt;
+        private Integer total_cnt;
 
-        public ForUserListResponseDto(User user)
-        {
+        public ForUserListResponseDto(User user) {
             this.name = user.getName();
             this.tel = user.getTel();
             this.email = user.getEmail();
             this.roles = user.getRoles();
             this.password = user.getPassword();
+            this.now_cnt = user.getNow_cnt();
+            this.total_cnt = user.getNow_cnt();
         }
 
-        public User toEntity2(){
+        public User toEntity2() {
             return User.builder()
                     .name(name)
                     .email(email)
                     .tel(tel)
                     .roles(roles)
                     .password(password)
+                    .now_cnt(now_cnt)
+                    .total_cnt(total_cnt)
                     .build();
         }
     }
@@ -119,12 +121,10 @@ public class UserDto {
      */
     @Getter
     @NoArgsConstructor
-    public static class ForUserValidateDuplicateEmail
-    {
+    public static class ForUserValidateDuplicateEmail {
         private String email;
 
-        public ForUserValidateDuplicateEmail(User user)
-        {
+        public ForUserValidateDuplicateEmail(User user) {
             this.email = user.getEmail();
         }
     }
@@ -134,13 +134,39 @@ public class UserDto {
      */
     @Getter
     @NoArgsConstructor
-    public static class ForUserValidateDuplicateTel
-    {
+    public static class ForUserValidateDuplicateTel {
         private String tel;
 
-        public ForUserValidateDuplicateTel(User user)
-        {
+        public ForUserValidateDuplicateTel(User user) {
             this.tel = user.getTel();
+        }
+    }
+
+
+    // User 정보 출력
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class ForUserTokenResponseDto {
+        /*
+        회원 정보
+         */
+        private Long member_seq;
+        private String name;
+        private String tel;
+        private String email;
+        private String roles;
+        private Integer now_cnt;
+        private Integer total_cnt;
+
+        public ForUserTokenResponseDto(User entity) {
+            this.member_seq = entity.getMember_seq();
+            this.name = entity.getName();
+            this.tel = entity.getTel();
+            this.email = entity.getEmail();
+            this.roles = entity.getRoles();
+            this.now_cnt = entity.getNow_cnt();
+            this.total_cnt = entity.getTotal_cnt();
         }
     }
 }

@@ -17,6 +17,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     User findUserByEmail(@Param("email") String email);
 
+    // 유저 정보 출력
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    List<User> findUserInfoByEmail(String email);
+
     Optional<User> findByEmail(String email);
 
     // 중복된 전화번호 있는지 체크
