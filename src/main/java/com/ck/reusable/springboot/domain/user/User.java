@@ -62,17 +62,12 @@ public class User extends BaseTimeEntity{
     @Column(name = "total_cnt", columnDefinition = "TEXT")
     private Integer total_cnt;
 
-//    @JsonManagedReference
-//    @ManyToOne
-//    @JoinColumn(name = "store_id")
-//    private Store store;
-//
-//    @JsonBackReference
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "Member", orphanRemoval = true)
-//    private List<Cup> cupList = new ArrayList<>();
+    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    private List<rental_history> rental_histories = new ArrayList<>();
 
     @Builder
-    public User(String name, String email, String tel, String password, String roles, Integer now_cnt, Integer total_cnt)
+    public User(String name, String email, String tel, String password, String roles, Integer now_cnt, Integer total_cnt, List<rental_history> rental_histories)
     {
         this.name = name;
         this.email = email;
@@ -81,6 +76,7 @@ public class User extends BaseTimeEntity{
         this.roles = roles;
         this.now_cnt = now_cnt;
         this.total_cnt = total_cnt;
+        this.rental_histories = rental_histories;
     }
 
     public void addRole(String role)
