@@ -9,10 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Builder
-@Data
+@Getter
 @Table(name="Cup")
 public class Cup extends BaseTimeEntity {
 
@@ -26,15 +24,16 @@ public class Cup extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer cupState;
 
-    @JsonManagedReference
+    //com.fasterxml.jackson.databind.JsonMappingException: Multiple back-reference properties with name 'defaultReference' 해결하기
+    // 직렬화가 중복으로 일어남
+    // value 값으로 관계 나타내주기!! (security시 발생 )
+    @JsonManagedReference(value = "relation-Cup-rental_history")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cup", orphanRemoval = true)
     private List<rental_history> rental_histories = new ArrayList<>();
-
 
     @Builder
     public Cup(Integer cupState, List<rental_history> rental_histories)
     {
         this.cupState = cupState;
-        this.rental_histories = rental_histories;
     }
 }

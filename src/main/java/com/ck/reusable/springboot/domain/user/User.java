@@ -21,10 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Builder
-@Data
+@Getter
 @EqualsAndHashCode(callSuper = false)
 @Table(name="Member")
 public class User extends BaseTimeEntity{
@@ -62,7 +60,9 @@ public class User extends BaseTimeEntity{
     @Column(name = "total_cnt", columnDefinition = "TEXT")
     private Integer total_cnt;
 
-    @JsonManagedReference
+    //com.fasterxml.jackson.databind.JsonMappingException: Multiple back-reference properties with name 'defaultReference' 해결하기
+    // 직렬화가 중복으로 일어남
+    @JsonManagedReference(value = "relation-User-rental_history")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<rental_history> rental_histories = new ArrayList<>();
 

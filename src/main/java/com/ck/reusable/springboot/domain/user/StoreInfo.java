@@ -1,20 +1,16 @@
 package com.ck.reusable.springboot.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Builder
-@Data
+@Getter
 @Table(name="Store")
 public class StoreInfo {
     @Id
@@ -39,7 +35,11 @@ public class StoreInfo {
     @Column(columnDefinition = "TEXT")
     private String tag;
 
-    @JsonManagedReference
+    //fastjson 순환 의존
+    //com.fasterxml.jackson.databind.JsonMappingException: Multiple back-reference properties with name 'defaultReference' 해결하기
+    // 직렬화가 중복으로 일어남
+    // value 값으로 관계 나타내주기!! (security시 발생 )
+    @JsonManagedReference(value = "relation-StoreInfo-rental_history")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store", orphanRemoval = true)
     private List<rental_history> rental_histories = new ArrayList<>();
 
@@ -53,7 +53,6 @@ public class StoreInfo {
         this.title = title;
         this.business_hours = business_hours;
         this.tag = tag;
-        this.rental_histories = rental_histories;
     }
 
 }
