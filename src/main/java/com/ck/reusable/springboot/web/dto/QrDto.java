@@ -9,6 +9,5 @@ public class QrDto {
     @Getter
     public static class ForQrResponseDto{
             Long cup_uid;
-            Long user_uid;
     }
 }
