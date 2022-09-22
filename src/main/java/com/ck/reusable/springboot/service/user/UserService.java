@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,11 +116,22 @@ public class UserService {
     User 현재 - 총 컵 대여 횟수 증가
      */
     @Transactional
-    public Integer UserRental(String email, Long cupUid){
+    public void UserRental(String email, Long cupUid){
         cupRepository.UpdateCupState(cupUid);
-        return userRepository.UpdateUserCnt(email);
+        userRepository.UpdateUserCnt(email);
     }
 
+
+    /*
+    반납 처리 자동 연결 부분
+     */
+    //TODO
+    // Repository 처리 해주기!! ( User - now_cnt 감소, Cup - user 연결 해제! , 상태전환)
+    @Transactional
+    public void UserReturn(Long cupUid)
+    {
+
+    }
 
 
 }

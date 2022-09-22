@@ -23,4 +23,7 @@ public interface CupRepository extends JpaRepository<Cup, Long> {
     @Query("update Cup c set c.cupState = 1 WHERE c.cupUid = :cupUid")
     void UpdateCupState(@Param("cupUid") Long cupUid);
 
+    @Query("SELECT c From Cup c WHERE c.cupUid = :cupUid")
+    Cup cupReturn(@Param("cupUid") Long cupUid);
+
 }

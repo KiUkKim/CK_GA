@@ -1,13 +1,20 @@
 package com.ck.reusable.springboot.web;
 
+import com.ck.reusable.springboot.domain.user.CupRepository;
+import com.ck.reusable.springboot.domain.user.StoreInfoRepository;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.service.Qr.QrService;
+import com.ck.reusable.springboot.service.user.RentalHistoryService;
 import com.ck.reusable.springboot.service.user.UserService;
 import com.ck.reusable.springboot.web.dto.QrDto;
+import com.ck.reusable.springboot.web.dto.RentalHistoryDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @RestController
@@ -15,9 +22,15 @@ public class QrApiController {
 
     private final UserService userService;
 
+    private final RentalHistoryService rentalHistoryService;
+
     private final QrService qrService;
 
     private final UserRepository userRepository;
+
+    private final StoreInfoRepository storeInfoRepository;
+
+    private final CupRepository cupRepository;
 
     @PutMapping("/manager/CupStateCheck")
     @ResponseBody
@@ -48,6 +61,9 @@ public class QrApiController {
                     break;
                 }
             case 1:
+                //TODO
+                // 자동 반납 기능 처리! ( USER 정보 확인할 필요 X )
+
                 message = "대여가 불가능합니다. [ 대여중인 컵  ] ";
                 break;
             case 2:
@@ -63,7 +79,7 @@ public class QrApiController {
         return responseDto;
     }
 
-    @PutMapping("/manager/CupRental")
+    @PutMapping("/manager/CupRental1")
     @ResponseBody
     public String cupRentalResponse(@RequestBody QrDto.ForCupRentalResponseDto forCupRentalResponseDto, Principal principal)
     {
@@ -92,18 +108,49 @@ public class QrApiController {
             if(nowCnt <= 2)
             {
                 userService.UserRental(userEmail, cupUid);
+                // user_rental history 연결
+
+
                 nowCnt = userService.UserCupNowCnt(userEmail);
 
+
+                /*
+                // Rental history Logic
+                 */
+                RentalHistoryDto.RentalHistoryResponseDto responseDto = new RentalHistoryDto.RentalHistoryResponseDto();
+                responseDto.setRentalAt(LocalDateTime.now());
+                responseDto.setUserUid(userService.findUser(userEmail));
+
+                responseDto.setCupUid(cupRepository.cupReturn(cupUid));
+
+                Long storeId = userRepository.returnStoreInfo(ManagerEmail);
+
+                responseDto.setStoreId(storeInfoRepository.ReturnStoreId(storeId));
+
+                responseDto.setCheckValue(0);
+
+                rentalHistoryService.saveRentalHistory(responseDto);
+
                 return name + "고객님의 대여가 정상적으로 이루어졌습니다. 현재 대여 컵 개수는 " + nowCnt + "개 입니다.";
+
+
             }
             else if(nowCnt > 2)
             {
                 nowCnt = userService.UserCupNowCnt(userEmail);
 
                 return name + "고객님의 대여가능 컵 개수는 " + nowCnt + "개로 대여가 불가능합니다.";
+
             }
         }
 
         return "반납이 완료된 컵으로 대여가 불가능합니다.";
     }
+
+
+
+    /*
+    대여중인 컵일 경우, 바로 반납 처리 부분
+     */
+
 }

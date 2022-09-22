@@ -1,6 +1,5 @@
 package com.ck.reusable.springboot.domain.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -43,10 +42,9 @@ public class StoreInfo {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store", orphanRemoval = true)
     private List<rental_history> rental_histories = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference(value = "relation-User-StoreInfo")
-    @JoinColumn(name = "userId")
-    private User user;
+    @JsonManagedReference(value = "relation-StoreInfo-User")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "storeInfo", orphanRemoval = true)
+    private List<User> userList = new ArrayList<>();
 
     @Builder
     public StoreInfo(Double latitude, Double longitude, String image_url, String title, String business_hours, String tag, List<rental_history> rental_histories)

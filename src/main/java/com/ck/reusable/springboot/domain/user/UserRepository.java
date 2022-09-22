@@ -54,4 +54,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u.name FROM User u WHERE u.member_seq = :userUid")
     String PrintUserName(@Param("userUid") Long userUid);
+
+    /*
+    Cup 반납시 사용하는 부분
+     */
+    @Modifying
+    @Query("update User u set u.now_cnt = u.now_cnt - 1 WHERE u.email = :email")
+    void updateReturnUserCnt(@Param("email") String email);
+
+
+    /*
+    매장 정보 반환
+     */
+    @Query("SELECT u.storeInfo.storeId FROM User u WHERE u.email = :email")
+    Long returnStoreInfo(@Param("email") String email);
+
 }
