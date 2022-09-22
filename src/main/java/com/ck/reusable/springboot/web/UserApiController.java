@@ -109,25 +109,6 @@ public class UserApiController {
         return userService.searchUserByEmail(principal.getName());
     }
 
-    @GetMapping("/user/test")
-    public String test(Principal principal)
-    {
-        return principal.getName();
-    }
-
-    // 권한 테스트
-    @PostMapping("/api/v1/user")
-    public String test1()
-    {
-        return "user";
-    }
-
-    @PostMapping("/user/qr")
-    @ResponseBody
-    public QrDto.ForQrResponseDto CupRent(@RequestBody QrDto.ForQrResponseDto qrResponseDto)
-    {
-        return qrResponseDto;
-    }
 
 
 

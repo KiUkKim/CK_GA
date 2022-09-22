@@ -1,6 +1,7 @@
 package com.ck.reusable.springboot.service.user;
 
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage2;
+import com.ck.reusable.springboot.domain.user.CupRepository;
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.web.dto.UserDto;
@@ -21,11 +22,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    @Autowired
     private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final CupRepository cupRepository;
     /*
     Dto 방식 Save Service
      */
@@ -95,6 +96,24 @@ public class UserService {
         return userRepository.findUserInfoByEmail(email).stream()
                 .map(UserDto.ForUserTokenResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    /*
+    User Email 현재 컵 개수 반환
+     */
+    @Transactional
+    public Integer UserCupNowCnt(String email)
+    {
+        return userRepository.UserNowCnt(email);
+    }
+
+    /*
+    User 현재 - 총 컵 대여 횟수 증가
+     */
+    @Transactional
+    public Integer UserRental(String email, Long cupUid){
+        cupRepository.UpdateCupState(cupUid);
+        return userRepository.UpdateUserCnt(email);
     }
 
 

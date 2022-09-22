@@ -37,8 +37,7 @@ import java.util.Optional;
 // 권한 인증이 필요한 구간은 해당 필터를 타게 되어있음
 // 권한 인증 필요한 구간 x -> 해당 필터 안탐
 
-//TODO
-// RestController를 여기에도 사용하면 2번 조회함.
+// RestController 를 여기에도 사용하면 2번 조회함.
 //@RestController
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
