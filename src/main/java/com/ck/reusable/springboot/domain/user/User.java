@@ -66,10 +66,9 @@ public class User extends BaseTimeEntity{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<rental_history> rental_histories = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference(value = "relation-StoreInfo-User")
-    @JoinColumn(name = "storeId")
-    private StoreInfo store;
+    @JsonManagedReference(value = "relation-User-StoreInfo")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    private List<StoreInfo> storeList = new ArrayList<>();
 
     @Builder
     public User(String name, String email, String tel, String password, String roles, Integer now_cnt, Integer total_cnt, List<rental_history> rental_histories)

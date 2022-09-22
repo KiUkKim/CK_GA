@@ -1,6 +1,7 @@
 package com.ck.reusable.springboot.domain.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -31,4 +32,26 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u.member_seq FROM User u WHERE u.member_seq = :user_id")
     String findMemSeqByUser_id(@Param("user_id") Long user_id);
+
+    /*
+    User 최대 컵 개수 체크
+     */
+    @Query("SELECT u.now_cnt FROM User u WHERE u.email = :email")
+    Integer UserNowCnt(@Param("email") String email);
+
+    //TODO
+    // 컵 대여 부분
+    // 생각해야 하는 부문 : user의 now_cnt 증가, total_cnt 증가 - 해당 유저와 rental history 연결
+    @Modifying
+    @Query("update User u set u.now_cnt = u.now_cnt + 1, u.total_cnt = u.total_cnt + 1 WHERE u.email = :email")
+    Integer UpdateUserCnt(@Param("email") String email);
+
+    //TODO
+    // 컵 대여 부분
+    // 출력을 위한 User 이름 반환
+    @Query("SELECT u.name FROM User u WHERE u.email = :email")
+    String PrintName(@Param("email") String email);
+
+    @Query("SELECT u.name FROM User u WHERE u.member_seq = :userUid")
+    String PrintUserName(@Param("userUid") Long userUid);
 }

@@ -1,6 +1,7 @@
 package com.ck.reusable.springboot.domain.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,5 +15,12 @@ public interface CupRepository extends JpaRepository<Cup, Long> {
 
     @Query("SELECT c.cupState From Cup c WHERE c.cupUid = :cupUid")
     Integer CanRental(@Param("cupUid") Long cupUid);
+
+    /*
+    Cup 대여시 값 변경
+     */
+    @Modifying
+    @Query("update Cup c set c.cupState = 1 WHERE c.cupUid = :cupUid")
+    void UpdateCupState(@Param("cupUid") Long cupUid);
 
 }

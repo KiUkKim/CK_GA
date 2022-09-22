@@ -43,10 +43,10 @@ public class StoreInfo {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store", orphanRemoval = true)
     private List<rental_history> rental_histories = new ArrayList<>();
 
-    @JsonManagedReference(value = "relation-StoreInfo-User")
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store", orphanRemoval = true)
-    private List<User> userStoreManager = new ArrayList<>();
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference(value = "relation-User-StoreInfo")
+    @JoinColumn(name = "userId")
+    private User user;
 
     @Builder
     public StoreInfo(Double latitude, Double longitude, String image_url, String title, String business_hours, String tag, List<rental_history> rental_histories)
