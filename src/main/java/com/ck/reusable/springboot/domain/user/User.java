@@ -3,22 +3,10 @@ package com.ck.reusable.springboot.domain.user;
 import com.ck.reusable.springboot.domain.BaseTimeEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.mysql.cj.protocol.x.Notice;
 import lombok.*;
-import net.bytebuddy.jar.asm.commons.Remapper;
-import org.apache.catalina.Store;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Entity
@@ -66,9 +54,10 @@ public class User extends BaseTimeEntity{
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private List<rental_history> rental_histories = new ArrayList<>();
 
-    @JsonManagedReference(value = "relation-User-StoreInfo")
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
-    private List<StoreInfo> storeList = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonBackReference(value = "relation-StoreInfo-User")
+    @JoinColumn(name = "storeId")
+    private StoreInfo storeInfo;
 
     @Builder
     public User(String name, String email, String tel, String password, String roles, Integer now_cnt, Integer total_cnt, List<rental_history> rental_histories)
