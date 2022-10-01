@@ -116,8 +116,8 @@ public class UserService {
     User 현재 - 총 컵 대여 횟수 증가
      */
     @Transactional
-    public void UserRental(String email, Long cupUid){
-        cupRepository.UpdateCupState(cupUid);
+    public void UserRental(String email, Long goodAttitudeCup_Uid){
+        cupRepository.UpdateCupState(goodAttitudeCup_Uid);
         userRepository.UpdateUserCnt(email);
     }
 
@@ -128,7 +128,7 @@ public class UserService {
     //TODO
     // Repository 처리 해주기!! ( User - now_cnt 감소, Cup - user 연결 해제! , 상태전환)
     @Transactional
-    public void UserReturn(Long cupUid)
+    public void UserReturn(Long goodAttitudeCup_Uid)
     {
 
     }

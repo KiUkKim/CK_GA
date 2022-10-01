@@ -23,7 +23,7 @@ public class RentalHistoryDto {
     public static class RentalHistoryResponseDto {
         private LocalDateTime rentalAt;
         private User userUid;
-        private Cup cupUid;
+        private Cup goodAttitudeCup_Uid;
         private StoreInfo storeId;
         private Integer checkValue;
 
@@ -32,7 +32,7 @@ public class RentalHistoryDto {
             return rental_history.builder()
                     .rentalAT(rentalAt)
                     .checkValue(checkValue)
-                    .cup(cupUid)
+                    .cup(goodAttitudeCup_Uid)
                     .store(storeId)
                     .user(userUid)
                     .build();

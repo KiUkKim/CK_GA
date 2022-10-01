@@ -20,7 +20,7 @@ public class rental_history {
     // 직렬화가 중복으로 일어남
     // value 값으로 관계 나타내주기!! (security시 발생 )
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cupUid")
+    @JoinColumn(name = "goodAttitudeCup_Uid")
     @JsonBackReference(value = "relation-Cup-rental_history")
     private Cup cup;
 
