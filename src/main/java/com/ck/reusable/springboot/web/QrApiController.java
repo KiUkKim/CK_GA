@@ -37,7 +37,7 @@ public class QrApiController {
     public QrDto.ForCupStateResponseDto CupStateCheck(@RequestBody QrDto.ForQrResponseDto qrResponseDto, Principal principal)
     {
         Long goodAttitudeCup_Uid = qrResponseDto.getGoodAttitudeCup_Uid();
-
+        System.out.println("cup_UID : " + goodAttitudeCup_Uid );
         String userEmail = principal.getName();
 
         Integer check = qrService.checkCupStateService(goodAttitudeCup_Uid);
@@ -79,9 +79,9 @@ public class QrApiController {
         return responseDto;
     }
 
-    @PutMapping("/manager/CupRental1")
+    @PutMapping("/manager/CupRental")
     @ResponseBody
-    public String cupRentalResponse(@RequestBody QrDto.ForCupRentalResponseDto forCupRentalResponseDto, Principal principal)
+    public QrDto.ForCupStateResponseDto cupRentalResponse(@RequestBody QrDto.ForCupRentalResponseDto forCupRentalResponseDto, Principal principal)
     {
         // 매장 직원 메일
         String ManagerEmail = principal.getName();
@@ -103,9 +103,15 @@ public class QrApiController {
         /*
         cupState 에 따른 구분 ( 0 : 대여가능, 1 : 대여중, 2: 반납 , 3: 세척 )
          */
+
+        //TODO
+        // 컵 상태 반환 - cupstate dto 형식으로 -- 2022 10/01 완료
+        QrDto.ForCupStateResponseDto responseMessageDto = new QrDto.ForCupStateResponseDto();
+        String message = "";
+
         if(check == 0)
         {
-            if(nowCnt <= 2)
+            if(nowCnt < 2)
             {
                 userService.UserRental(userEmail, cupUid);
                 // user_rental history 연결
@@ -131,20 +137,24 @@ public class QrApiController {
 
                 rentalHistoryService.saveRentalHistory(responseDto);
 
-                return name + "고객님의 대여가 정상적으로 이루어졌습니다. 현재 대여 컵 개수는 " + nowCnt + "개 입니다.";
-
-
+                message = name + "고객님의 대여가 정상적으로 이루어졌습니다. 현재 대여 컵 개수는 " + nowCnt + "개 입니다.";
+                responseMessageDto.setCupState(message);
+                return  responseMessageDto;
             }
-            else if(nowCnt > 2)
+            else if(nowCnt >= 2)
             {
                 nowCnt = userService.UserCupNowCnt(userEmail);
 
-                return name + "고객님의 대여가능 컵 개수는 " + nowCnt + "개로 대여가 불가능합니다.";
+                message = name + "고객님의 대여가능 컵 개수는 " + nowCnt + "개로 대여가 불가능합니다.";
+                responseMessageDto.setCupState(message);
 
+                return responseMessageDto;
             }
         }
 
-        return "반납이 완료된 컵으로 대여가 불가능합니다.";
+        message = "반납이 완료된 컵으로 대여가 불가능합니다.";
+        responseMessageDto.setCupState(message);
+        return responseMessageDto;
     }
 
 
