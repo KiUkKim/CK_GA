@@ -12,7 +12,7 @@ public class QrDto {
      */
     @Getter
     public static class ForQrResponseDto{
-            Long cup_uid;
+            Long goodAttitudeCup_Uid;
     }
 
     /*
@@ -33,6 +33,6 @@ public class QrDto {
     public static class ForCupRentalResponseDto
     {
         Long userUid;
-        Long cupUid;
+        Long goodAttitudeCup_Uid;
     }
 }

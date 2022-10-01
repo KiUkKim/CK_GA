@@ -15,8 +15,8 @@ public class QrService {
 
     // 컵의 상태를 체크하는 부분
     @Transactional
-    public Integer checkCupStateService(Long cupUid)
+    public Integer checkCupStateService(Long goodAttitudeCup_Uid)
     {
-        return cupRepository.CanRental(cupUid);
+        return cupRepository.CanRental(goodAttitudeCup_Uid);
     }
 }

@@ -16,7 +16,7 @@ public class Cup extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cupUid;
+    private Long goodAttitudeCup_Uid;
 
     /*
     cup_state -- 0 대여가능, 1 대여중 , 2 반납, 3 세척

@@ -36,11 +36,11 @@ public class QrApiController {
     @ResponseBody
     public QrDto.ForCupStateResponseDto CupStateCheck(@RequestBody QrDto.ForQrResponseDto qrResponseDto, Principal principal)
     {
-        Long cupUid = qrResponseDto.getCup_uid();
+        Long goodAttitudeCup_Uid = qrResponseDto.getGoodAttitudeCup_Uid();
 
         String userEmail = principal.getName();
 
-        Integer check = qrService.checkCupStateService(cupUid);
+        Integer check = qrService.checkCupStateService(goodAttitudeCup_Uid);
 
         Integer nowCnt = userService.UserCupNowCnt(userEmail);
 
@@ -51,7 +51,7 @@ public class QrApiController {
          */
         switch (check){
             case 0:
-                if(nowCnt > 2)
+                if(nowCnt > 1)
                 {
                     message = "해당 유저의 대여 가능 컵 개수가 " + nowCnt + "로 초과했습니다.";
                     break;
@@ -86,7 +86,7 @@ public class QrApiController {
         // 매장 직원 메일
         String ManagerEmail = principal.getName();
 
-        Long cupUid = forCupRentalResponseDto.getCupUid();
+        Long cupUid = forCupRentalResponseDto.getGoodAttitudeCup_Uid();
         Long userUid = forCupRentalResponseDto.getUserUid();;
 
         String userEmail = userRepository.findEmailByUser_id(userUid);
@@ -121,7 +121,7 @@ public class QrApiController {
                 responseDto.setRentalAt(LocalDateTime.now());
                 responseDto.setUserUid(userService.findUser(userEmail));
 
-                responseDto.setCupUid(cupRepository.cupReturn(cupUid));
+                responseDto.setGoodAttitudeCup_Uid(cupRepository.cupReturn(cupUid));
 
                 Long storeId = userRepository.returnStoreInfo(ManagerEmail);
 
