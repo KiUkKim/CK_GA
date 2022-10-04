@@ -78,6 +78,9 @@ public class UserApiController {
         return new ResponseEntity<>(er3, HttpStatus.ACCEPTED);
     }
 
+    //TODO
+    // 핸드폰 번호 인증 관련 로직 ( 생각해봐야 함 )
+
     // 이메일 중복 체크 (이미 인증된 전화번호 404 반환)
     @PostMapping("/emailValidate")
     @ResponseBody
