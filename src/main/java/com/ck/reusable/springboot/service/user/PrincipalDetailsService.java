@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-//http://localhost:8080/login
 @RequiredArgsConstructor
 @Service
 public class PrincipalDetailsService implements UserDetailsService {

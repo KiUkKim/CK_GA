@@ -78,6 +78,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String jwtHeader = request.getHeader("Authorization");
 
+        String servletUrl = request.getServletPath();
+
         logger.info("jwtHeader : " + jwtHeader);
 
         // Header가 존재하지 않는 값이거나, Bearer token이 아닐경우 ( 잘못된 토큰 값이 들어온 경우) filter로 걸러줌.
@@ -88,121 +90,134 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        String jwtToken = "";
+        // Access Token 갱신에 필요한 url 요청 시, 토큰 유효성 검증 x ( 검증시 내부로직에서 구현해야함 - 요구사항과 맞지 않음)
+        else if(servletUrl.equals("/refreshTokenRenew"))
+        {
+            logger.info("/refreshTokenRenew 사이트에 대한 토큰 유효성 검증을 시행하지 않습니다.");
+            chain.doFilter(request, response);
+        }
 
-        try{
-            // JwtToken 을 검증해서 정상적인 사용자인지 확인
-            // Bearer [token값]으로 들어오는데 Bearer와 공백 한칸을 제외한 token값을 가져옴
-            // 쿠키 값에서 가져오는 방식
-            jwtToken = request.getHeader(jwtProperties.HEADER_STRING).replace(jwtProperties.TOKEN_PREFIX, "");
+        else{
+
+            String jwtToken = "";
+
+            try{
+                // JwtToken 을 검증해서 정상적인 사용자인지 확인
+                // Bearer [token값]으로 들어오는데 Bearer와 공백 한칸을 제외한 token값을 가져옴
+                // 쿠키 값에서 가져오는 방식
+                jwtToken = request.getHeader(jwtProperties.HEADER_STRING).replace(jwtProperties.TOKEN_PREFIX, "");
 
 //            jwtToken = jwtCookieUtilService.getCookieValue(request, accessTokenName);
 
-            logger.info("AccessToken 추출 : " + jwtToken);
+                logger.info("AccessToken 추출 : " + jwtToken);
 
-            // Hash방식의 암호화된 곳 사인값으로 확인
-            // 올바르게 작동되었다면 token으로 만들 때 사용한 아이디값을 가져오게 된다.
-            String email = JWT.require(Algorithm.HMAC256(jwtProperties.SECRET)).build().verify(jwtToken).getClaim( "email").asString();
+                // Hash방식의 암호화된 곳 사인값으로 확인
+                // 올바르게 작동되었다면 token으로 만들 때 사용한 아이디값을 가져오게 된다.
+                String email = JWT.require(Algorithm.HMAC256(jwtProperties.SECRET)).build().verify(jwtToken).getClaim( "email").asString();
 
-            logger.info("email 출력 : " + email);
+                logger.info("email 출력 : " + email);
 
-            // 서명이 정상적으로 된 경우, User 존재가 맞는지 판단.
-            // 로그인한 정보로 검증을 하는 것이 아니라, JWT token을 통해서 판단.
-            if(email != null)
-            {
-                User user = userRepository.findUserByEmail(email);
+                // 서명이 정상적으로 된 경우, User 존재가 맞는지 판단.
+                // 로그인한 정보로 검증을 하는 것이 아니라, JWT token을 통해서 판단.
+                if(email != null)
+                {
+                    User user = userRepository.findUserByEmail(email);
 
-                PrincipalDetails principalDetails = new PrincipalDetails(user);
+                    PrincipalDetails principalDetails = new PrincipalDetails(user);
 
-                // Email이 확실하다는 것은 - 정상적으로 로그인이 수행됐다는 뜻이므로 null [비밀번호 구간 ] 이 가능하다.
-                // Jwt 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 생성해준다.
-                Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
+                    // Email이 확실하다는 것은 - 정상적으로 로그인이 수행됐다는 뜻이므로 null [비밀번호 구간 ] 이 가능하다.
+                    // Jwt 토큰 서명을 통해서 서명이 정상이면 Authentication 객체를 생성해준다.
+                    Authentication authentication =
+                            new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
 
-                // 강제로 시큐리티의 세션에 접근하여 Authentication 객체 저장
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    // 강제로 시큐리티의 세션에 접근하여 Authentication 객체 저장
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                chain.doFilter(request, response);
+                    chain.doFilter(request, response);
+                }
             }
-        }
-        catch (TokenExpiredException e)
-        {
-            logger.info("만료된 엑세스 토큰 : " + jwtToken);
+            catch (TokenExpiredException e)
+            {
+                logger.info("만료된 엑세스 토큰 : " + jwtToken);
 
-            // 리프레쉬 토큰 꺼내기
-            String refreshToken = Optional.ofNullable(request.getHeader(refreshTokenName)).orElseGet(()->null);
+                // 리프레쉬 토큰 꺼내기
+                String refreshToken = Optional.ofNullable(request.getHeader(refreshTokenName)).orElseGet(()->null);
 //            String refreshToken = request.getHeader(refreshTokenName).replace(jwtProperties.TOKEN_PREFIX, "");
 
-            // refreshToken 을 담지 않았다면 담으라는 요청.
-            if(refreshToken == null)
-            {
-                jwtCookieUtilService.goForward("/refreshTokenValidation/X", request, response);
-                return;
-            }
+                // refreshToken 을 담지 않았다면 담으라는 요청.
+                if(refreshToken == null)
+                {
+                    logger.info("요청된 uri : /refreshTokenValidation/X");
+                    jwtCookieUtilService.goForward("/refreshTokenValidation/X", request, response);
+                    return;
+                }
 
-            refreshToken = Optional.ofNullable(refreshToken.replace(jwtProperties.TOKEN_PREFIX, "")).orElseGet(()->null);
+                refreshToken = Optional.ofNullable(refreshToken.replace(jwtProperties.TOKEN_PREFIX, "")).orElseGet(()->null);
 
-            logger.info("리프레쉬 토큰 : " + refreshToken);
+                logger.info("리프레쉬 토큰 : " + refreshToken);
 
-            logger.info(refreshTokenName + "  " + refreshToken + " user_id 찾기");
+                logger.info(refreshTokenName + "  " + refreshToken + " user_id 찾기");
 
-            Long id = jwtRepository.findUserId(refreshToken);
+                Long id = jwtRepository.findUserId(refreshToken);
 
 //            Long id = jwtService.getRefreshTokenId(refreshToken);
 
-            logger.info("리프레쉬 토큰 id " + id);
+                logger.info("리프레쉬 토큰 id " + id);
 
-            String email = Optional.ofNullable(userRepository.findEmailByUser_id(id)).orElseGet(()->null);
+                String email = Optional.ofNullable(userRepository.findEmailByUser_id(id)).orElseGet(()->null);
 
-            // 유효하지 않은 refreshToken 값
-            if(email==null)
-        {
-            jwtCookieUtilService.goForward("/tokenExpire/X", request, response);
-            return;
-        }
+                // 유효하지 않은 refreshToken 값
+                if(email==null)
+                {
+                    jwtCookieUtilService.goForward("/tokenExpire/X", request, response);
+                    return;
+                }
 
-            logger.info("refresh token으로 찾은 이메일 : " + email);
+                logger.info("refresh token으로 찾은 이메일 : " + email);
 
-            Timestamp getCreated = jwtRepository.findDateTime(refreshToken);
+                Timestamp getCreated = jwtRepository.findDateTime(refreshToken);
 
 
-            // 토큰 유효성 검증
-            // 기간 지났으면 재로그인 요청
-            if(jwtService.checkRefreshTokenValidity(getCreated))
-            {
-                logger.info("================================리프레시 토큰 만료");
-                logger.info("요청 url : /RefreshTokenExpire/Y");
-                jwtCookieUtilService.goForward("/RefreshTokenExpire/Y", request, response);
-                return;
+                // 토큰 유효성 검증
+                // 기간 지났으면 재로그인 요청
+                if(jwtService.checkRefreshTokenValidity(getCreated))
+                {
+                    logger.info("================================리프레시 토큰 만료");
+                    logger.info("요청 url : /RefreshTokenExpire/Y");
+                    jwtCookieUtilService.goForward("/RefreshTokenExpire/Y", request, response);
+                    return;
 //                jwtService.deleteRefreshToken2(refreshToken);
 //                refreshToken = jwtService.getJwtToken();
 //                jwtService.insertRefreshToken(refreshToken, id);
 //                response.addHeader(jwtProperties.REFRESH_STRING, refreshToken);
+                }
+                // 기간 안지났다면 그대로 진행. (refresh token 그대로 진행)
+
+                // 새 엑서스 토큰 발급 ( 예외 처리 후, 받아오기
+                String accessToken= jwtService.get_access_token(email);
+
+                logger.info("새로운 토큰 발급 : " + accessToken);
+
+                Map<String, Object> accessTokenCookie = new HashMap<>();
+                accessTokenCookie.put(accessTokenName, accessToken);
+
+                jwtCookieUtilService.TokenToCookie(accessTokenCookie, response);
+
+                jwtCookieUtilService.goForward("/tokenExpire/Y", request, response);
+            }catch (NullPointerException e2)
+            {
+                logger.info("토큰이 없음 비로그인 사용자 요청");
+                jwtCookieUtilService.goForward("/tokenExpire/X", request, response);
             }
-            // 기간 안지났다면 그대로 진행. (refresh token 그대로 진행)
 
-            // 새 엑서스 토큰 발급 ( 예외 처리 후, 받아오기
-            String accessToken= jwtService.get_access_token(email);
+            logger.info("인증필터 통과");
 
-            logger.info("새로운 토큰 발급 : " + accessToken);
-
-            Map<String, Object> accessTokenCookie = new HashMap<>();
-            accessTokenCookie.put(accessTokenName, accessToken);
-
-            jwtCookieUtilService.TokenToCookie(accessTokenCookie, response);
-
-            jwtCookieUtilService.goForward("/tokenExpire/Y", request, response);
-        }catch (NullPointerException e2)
-        {
-            logger.info("토큰이 없음 비로그인 사용자 요청");
-            jwtCookieUtilService.goForward("/tokenExpire/X", request, response);
+            //TODO
+            // chain을 쓰면 조회를 2번하게 되는 경우 발생 -> 왜 그런지 공부하기!
+//        chain.doFilter(request, response);
         }
 
-        logger.info("인증필터 통과");
-
-        //TODO
-        // chain을 쓰면 조회를 2번하게 되는 경우 발생 -> 왜 그런지 공부하기!
-//        chain.doFilter(request, response);
     }
+
 
 }
