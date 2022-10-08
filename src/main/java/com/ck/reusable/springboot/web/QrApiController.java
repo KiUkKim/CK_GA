@@ -47,7 +47,7 @@ public class QrApiController {
         String message = "";
 
         /*
-        cupState 에 따른 구분 ( 0 : 대여가능, 1 : 대여중, 2: 반납 , 3: 세척 )
+        cupState 에 따른 구분 ( 0 : 대여가능, 1 : 대여중, 2: 반납 , 3: 세척, 4: 분실 )
          */
         switch (check){
             case 0:
@@ -57,20 +57,23 @@ public class QrApiController {
                     break;
                 }
                 else{
-                    message = "대여 가능한 컵입니다.";
+                    message = "available";
                     break;
                 }
             case 1:
                 //TODO
                 // 자동 반납 기능 처리! ( USER 정보 확인할 필요 X )
 
-                message = "대여가 불가능합니다. [ 대여중인 컵  ] ";
+                message = "using";
                 break;
             case 2:
-                message = "대여가 불가능합니다. [ 반납처리 된 컵] ";
+                message = "return";
                 break;
             case 3:
-                message = "대여가 불가능합니다. [ 세척 중인 컵 ] ";
+                message = "return";
+                break;
+            case 4:
+                message = "cleanse";
                 break;
         }
 
