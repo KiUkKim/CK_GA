@@ -70,10 +70,10 @@ public class QrApiController {
                 message = "return";
                 break;
             case 3:
-                message = "return";
+                message = "cleanse";
                 break;
             case 4:
-                message = "cleanse";
+                message = "loss";
                 break;
         }
 
