@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
 @Table(name="Member")
 public class User extends BaseTimeEntity{

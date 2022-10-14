@@ -10,6 +10,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @Entity
+@Setter
 @Getter
 @Table(name="Cup")
 public class Cup extends BaseTimeEntity {

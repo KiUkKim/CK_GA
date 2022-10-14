@@ -3,8 +3,6 @@ package com.ck.reusable.springboot.Filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage2;
-import com.ck.reusable.springboot.domain.user.RefreshJwt;
 import com.ck.reusable.springboot.domain.user.RefreshJwtRepository;
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
@@ -12,22 +10,16 @@ import com.ck.reusable.springboot.security.PrincipalDetails;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
 import com.ck.reusable.springboot.service.user.jwtService;
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,8 +58,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         this.userRepository = userRepository;
         this.jwtCookieUtilService = jwtCookieUtilService;
     }
-
-
 
     // 인증 권한 페이지는 해당 필터를 탐
     @Override

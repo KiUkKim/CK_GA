@@ -4,7 +4,7 @@ import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage;
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage2;
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage3;
 import com.ck.reusable.springboot.domain.user.User;
-import com.ck.reusable.springboot.domain.user.UserRepository;
+import com.ck.reusable.springboot.service.Qr.QrService;
 import com.ck.reusable.springboot.service.user.UserService;
 import com.ck.reusable.springboot.service.user.UserVertificationService;
 import com.ck.reusable.springboot.web.dto.QrDto;
@@ -12,14 +12,7 @@ import com.ck.reusable.springboot.web.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.testng.Assert;
-
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
 
@@ -31,6 +24,7 @@ public class UserApiController {
     private final UserService userService;
 
     private final UserVertificationService vertificationService;
+
 
 //     회원가입
     @PostMapping("/save")
@@ -111,6 +105,7 @@ public class UserApiController {
     {
         return userService.searchUserByEmail(principal.getName());
     }
+
 
 
 
