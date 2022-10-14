@@ -1,5 +1,6 @@
 package com.ck.reusable.springboot.web.jwt;
 
+import org.slf4j.Logger;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
@@ -42,8 +43,8 @@ public class jwtCookieUtilService {
         LocalDateTime timestamp2 = timestamp.toLocalDateTime();
 
         // 오늘 날짜에 토큰 기한 계산
-//        timestamp2 = timestamp2.plusDays(14);
-        timestamp2 = timestamp2.plusMinutes(5);
+        timestamp2 = timestamp2.plusDays(14);
+//        timestamp2 = timestamp2.plusMinutes(5);
 
         // 오늘 날짜 계산
         LocalDateTime today = LocalDateTime.now();

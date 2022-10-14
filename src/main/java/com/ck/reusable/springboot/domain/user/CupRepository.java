@@ -26,4 +26,5 @@ public interface CupRepository extends JpaRepository<Cup, Long> {
     @Query("SELECT c From Cup c WHERE c.goodAttitudeCup_Uid = :goodAttitudeCup_Uid")
     Cup cupReturn(@Param("goodAttitudeCup_Uid") Long goodAttitudeCup_Uid);
 
+
 }

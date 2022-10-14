@@ -69,4 +69,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.storeInfo.storeId FROM User u WHERE u.email = :email")
     Long returnStoreInfo(@Param("email") String email);
 
+
 }
