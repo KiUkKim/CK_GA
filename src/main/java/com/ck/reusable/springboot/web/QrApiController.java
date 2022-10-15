@@ -104,10 +104,10 @@ public class QrApiController {
         // Check Cup State
         Integer check = qrService.checkCupStateService(cupUid);
 
-        String msg = qrService.FormatCupState(check);
-
         // Cup 개수 초과인지 확인
         Integer nowCnt = userService.UserCupNowCnt(userEmail);
+
+        String msg = qrService.FormatCupState(check);
 
         /*
         cupState 에 따른 구분 ( 0 : 대여가능, 1 : 대여중, 2: 반납 , 3: 세척 )
@@ -147,7 +147,7 @@ public class QrApiController {
                 rentalHistoryService.saveRentalHistory(responseDto);
 
 //                message = name + "고객님의 대여가 정상적으로 이루어졌습니다. 현재 대여 컵 개수는 " + nowCnt + "개 입니다.";
-                message = msg;
+                message = "returned";
                 responseMessageDto.setCupState(message);
                 return  responseMessageDto;
             }
@@ -156,6 +156,8 @@ public class QrApiController {
                 nowCnt = userService.UserCupNowCnt(userEmail);
 
 //                message = name + "고객님의 대여가능 컵 개수는 " + nowCnt + "개로 대여가 불가능합니다.";
+                msg = qrService.FormatCupState(check);
+
                 message = msg;
                 responseMessageDto.setCupState(message);
 
