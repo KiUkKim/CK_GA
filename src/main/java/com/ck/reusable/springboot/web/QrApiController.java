@@ -147,7 +147,7 @@ public class QrApiController {
                 rentalHistoryService.saveRentalHistory(responseDto);
 
 //                message = name + "고객님의 대여가 정상적으로 이루어졌습니다. 현재 대여 컵 개수는 " + nowCnt + "개 입니다.";
-                message = "returned";
+                message = "using";
                 responseMessageDto.setCupState(message);
                 return  responseMessageDto;
             }
