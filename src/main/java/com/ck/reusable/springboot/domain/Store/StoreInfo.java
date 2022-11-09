@@ -1,5 +1,7 @@
-package com.ck.reusable.springboot.domain.user;
+package com.ck.reusable.springboot.domain.Store;
 
+import com.ck.reusable.springboot.domain.History.rental_history;
+import com.ck.reusable.springboot.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -39,7 +41,7 @@ public class StoreInfo {
     // 직렬화가 중복으로 일어남
     // value 값으로 관계 나타내주기!! (security시 발생 )
     @JsonManagedReference(value = "relation-StoreInfo-rental_history")
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "rentalStore", orphanRemoval = true)
     private List<rental_history> rental_histories = new ArrayList<>();
 
     @JsonManagedReference(value = "relation-StoreInfo-User")
@@ -47,7 +49,7 @@ public class StoreInfo {
     private List<User> userList = new ArrayList<>();
 
     @Builder
-    public StoreInfo(Double latitude, Double longitude, String image_url, String title, String business_hours, String tag, List<rental_history> rental_histories)
+    public StoreInfo(Double latitude, Double longitude, String image_url, String title, String business_hours, String tag)
     {
         this.latitude = latitude;
         this.longitude = longitude;

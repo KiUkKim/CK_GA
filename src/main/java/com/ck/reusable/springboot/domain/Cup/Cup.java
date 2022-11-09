@@ -1,6 +1,7 @@
-package com.ck.reusable.springboot.domain.user;
+package com.ck.reusable.springboot.domain.Cup;
 
 import com.ck.reusable.springboot.domain.BaseTimeEntity;
+import com.ck.reusable.springboot.domain.History.rental_history;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -37,4 +38,5 @@ public class Cup extends BaseTimeEntity {
     {
         this.cupState = cupState;
     }
+
 }

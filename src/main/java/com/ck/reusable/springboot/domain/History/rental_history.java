@@ -1,5 +1,8 @@
-package com.ck.reusable.springboot.domain.user;
+package com.ck.reusable.springboot.domain.History;
 
+import com.ck.reusable.springboot.domain.Cup.Cup;
+import com.ck.reusable.springboot.domain.Store.StoreInfo;
+import com.ck.reusable.springboot.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
@@ -28,8 +31,8 @@ public class rental_history {
     private LocalDateTime rentalAT;
 
     // insertable 써줘야지 insert 자동으로 안함!!
-    @Column(nullable = true, insertable = false)
-    private LocalDateTime returnAT;
+//    @Column(nullable = true, insertable = false)
+//    private LocalDateTime returnAT;
 
     // check = 0 <<< 현재 빌리고 있는 컵, check = 1 << 과거의 컵들
     @Column(nullable = false)
@@ -48,8 +51,12 @@ public class rental_history {
     // value 값으로 관계 나타내주기!! (security 시 발생 )
     @JsonBackReference(value = "relation-StoreInfo-rental_history")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "storeId")
-    private StoreInfo store;
+    @JoinColumn(name = "rentalStore_Id")
+    private StoreInfo rentalStore;
+//
+//    @OneToOne(mappedBy = "rentalH")
+//    private return_history returnH;
+
 
     @Builder
     public rental_history(LocalDateTime rentalAT, Cup cup, User user, StoreInfo store, Integer checkValue)
@@ -57,7 +64,7 @@ public class rental_history {
         this.rentalAT = rentalAT;
         this.user = user;
         this.cup = cup;
-        this.store = store;
+        this.rentalStore = store;
         this.checkValue = checkValue;
     }
 }
