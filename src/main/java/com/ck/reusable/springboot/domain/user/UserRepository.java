@@ -18,9 +18,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     User findUserByEmail(@Param("email") String email);
 
+    @Query("SELECT u.member_seq FROM User u WHERE u.email = :email")
+    Long findUserIdByEmail(@Param("email") String email);
+
     // 유저 정보 출력
     @Query("SELECT u FROM User u WHERE u.email = :email")
     List<User> findUserInfoByEmail(String email);
+
+    //TODO
+    // 테스트 완료 한 후에, 이름 명확하게 바꿀 것!
+    // 유저 정보 출력
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    User findUserInfoByEmail2(@Param("email") String email);
 
     Optional<User> findByEmail(String email);
 

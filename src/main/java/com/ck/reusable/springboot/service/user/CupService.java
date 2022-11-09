@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 
 @RequiredArgsConstructor
 @Service
@@ -19,7 +20,7 @@ public class CupService {
     자동 반환 관련 페이지 전환
      */
     @Transactional
-    public Object goReturn(String uri_direct, HttpServletRequest request, HttpServletResponse response, QrDto.ForQrResponseDto responseDto)
+    public Object goReturn(String uri_direct, HttpServletRequest request, HttpServletResponse response, QrDto.ForQrResponseDto responseDto, Principal principal)
     {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher(uri_direct);
 
@@ -27,6 +28,7 @@ public class CupService {
             request.setCharacterEncoding("UTF-8");
 
             request.setAttribute("goodAttitudeCupUid", responseDto.getGoodAttitudeCup_Uid());
+            request.setAttribute("mEmail", principal.getName());
             requestDispatcher.forward(request, response);
         }catch (ServletException e)
         {

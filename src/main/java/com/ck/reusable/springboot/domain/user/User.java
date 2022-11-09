@@ -1,6 +1,8 @@
 package com.ck.reusable.springboot.domain.user;
 
 import com.ck.reusable.springboot.domain.BaseTimeEntity;
+import com.ck.reusable.springboot.domain.History.rental_history;
+import com.ck.reusable.springboot.domain.Store.StoreInfo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;

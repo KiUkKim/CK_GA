@@ -1,4 +1,4 @@
-package com.ck.reusable.springboot.domain.user;
+package com.ck.reusable.springboot.domain.Store;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

@@ -4,17 +4,18 @@ import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage;
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage2;
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage3;
 import com.ck.reusable.springboot.domain.user.User;
-import com.ck.reusable.springboot.service.Qr.QrService;
+import com.ck.reusable.springboot.service.user.RentalHistoryService;
 import com.ck.reusable.springboot.service.user.UserService;
 import com.ck.reusable.springboot.service.user.UserVertificationService;
-import com.ck.reusable.springboot.web.dto.QrDto;
 import com.ck.reusable.springboot.web.dto.UserDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class UserApiController {
 
     private final UserVertificationService vertificationService;
 
+    private final RentalHistoryService rentalHistoryService;
 
 //     회원가입
     @PostMapping("/save")
@@ -101,12 +103,39 @@ public class UserApiController {
     User 정보 출력
      */
     @GetMapping("/user/userInfo")
-    public List<UserDto.ForUserTokenResponseDto> searchLoginUser(Principal principal)
-    {
-        return userService.searchUserByEmail(principal.getName());
+    public UserDto.ForUserTokenResponseDto searchLoginUser(Principal principal) {
+        /*
+        유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력
+         */
+        UserDto.ForUserTokenResponseDto forUserTokenResponseDto = new UserDto.ForUserTokenResponseDto();
+        User user = userService.searchUserByEmail2(principal.getName());
+
+        BeanUtils.copyProperties(user, forUserTokenResponseDto);
+
+        forUserTokenResponseDto.setUId(user.getMember_seq());
+
+        /*
+
+         */
+        Long user_id = userService.userIdByEmail(principal.getName());
+
+        //TODO
+        // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
+
+        // 여러 개 정보들을 한곳에 합쳐주기 위함
+        List<Map<String, Object>> nowRental = rentalHistoryService.InfoNowRentalHistory(user_id);
+
+        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id);
+
+        /*
+        담겨온 정보 list에 넣어줌
+         */
+        forUserTokenResponseDto.setRentalStatus(nowRental);
+
+        forUserTokenResponseDto.setHistory(pastRental);
+
+        return forUserTokenResponseDto;
     }
-
-
 
 
 

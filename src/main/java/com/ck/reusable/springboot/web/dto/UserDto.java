@@ -6,6 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 // 클라이언트에서 전달하는 데이터를 담는 객체
 
 
@@ -151,22 +157,25 @@ public class UserDto {
         /*
         회원 정보
          */
-        private Long member_seq;
+        private Long uId;
         private String name;
         private String tel;
         private String email;
-        private String roles;
         private Integer now_cnt;
         private Integer total_cnt;
 
+        // 대여기록, 과거 대여 기록 관련 부분.
+        List<Map<String, Object>> rentalStatus = new ArrayList();
+
+        List<Map<String, Object>> history = new ArrayList();
+
         public ForUserTokenResponseDto(User entity) {
-            this.member_seq = entity.getMember_seq();
             this.name = entity.getName();
             this.tel = entity.getTel();
             this.email = entity.getEmail();
-            this.roles = entity.getRoles();
             this.now_cnt = entity.getNow_cnt();
             this.total_cnt = entity.getTotal_cnt();
         }
     }
+
 }

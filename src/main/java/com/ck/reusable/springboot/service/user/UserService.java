@@ -1,25 +1,16 @@
 package com.ck.reusable.springboot.service.user;
 
-import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage2;
-import com.ck.reusable.springboot.domain.user.CupRepository;
+import com.ck.reusable.springboot.domain.Cup.CupRepository;
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.web.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,6 +94,15 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+
+    //TDOO
+    // 테스트 완료한 후에 명확하게 이름 바꿀 것!
+    @Transactional
+    public User searchUserByEmail2(String email)
+    {
+        return userRepository.findUserInfoByEmail2(email);
+    }
+
     /*
     User Email 현재 컵 개수 반환
      */
@@ -110,6 +110,15 @@ public class UserService {
     public Integer UserCupNowCnt(String email)
     {
         return userRepository.UserNowCnt(email);
+    }
+
+    /*
+    User Id 찾아주는 로직
+     */
+    @Transactional
+    public Long userIdByEmail(String email)
+    {
+        return userRepository.findUserIdByEmail(email);
     }
 
     /*
@@ -125,13 +134,12 @@ public class UserService {
     /*
     반납 처리 자동 연결 부분
      */
-    //TODO
-    // Repository 처리 해주기!! ( User - now_cnt 감소, Cup - user 연결 해제! , 상태전환)
-    @Transactional
-    public void UserReturn(Long goodAttitudeCup_Uid)
-    {
-
-    }
+//    // Repository 처리 해주기!! ( User - now_cnt 감소, Cup - user 연결 해제! , 상태전환)
+//    @Transactional
+//    public void UserReturn(Long goodAttitudeCup_Uid)
+//    {
+//
+//    }
 
 
 }

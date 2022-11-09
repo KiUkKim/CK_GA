@@ -1,7 +1,7 @@
 package com.ck.reusable.springboot.web;
 
-import com.ck.reusable.springboot.domain.user.CupRepository;
-import com.ck.reusable.springboot.domain.user.StoreInfoRepository;
+import com.ck.reusable.springboot.domain.Cup.CupRepository;
+import com.ck.reusable.springboot.domain.Store.StoreInfoRepository;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.service.Qr.QrService;
 import com.ck.reusable.springboot.service.user.CupService;
@@ -10,16 +10,10 @@ import com.ck.reusable.springboot.service.user.UserService;
 import com.ck.reusable.springboot.web.dto.QrDto;
 import com.ck.reusable.springboot.web.dto.RentalHistoryDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.time.LocalDateTime;
 
@@ -68,7 +62,7 @@ public class QrApiController {
             case 1:
                 //TODO
                 // 자동 반납 기능 처리! ( USER 정보 확인할 필요 X )
-                cupService.goReturn("/cupReturn", request, response, qrResponseDto);
+                cupService.goReturn("/cupReturn", request, response, qrResponseDto, principal);
                 break;
             case 2:
                 message = "returned";
@@ -93,8 +87,9 @@ public class QrApiController {
         // 매장 직원 메일
         String ManagerEmail = principal.getName();
 
+        // DTO 입력 부분
         Long cupUid = forCupRentalResponseDto.getGoodAttitudeCup_Uid();
-        Long userUid = forCupRentalResponseDto.getUserUid();;
+        Long userUid = forCupRentalResponseDto.getUserUid();
 
         String userEmail = userRepository.findEmailByUser_id(userUid);
 
@@ -179,23 +174,34 @@ public class QrApiController {
     반납 API
      */
 
-    //TODO
-    // Servelet request Body 가져오는 법 공부!
 
+    // 반납 될 때 해당 rental history checkvalue, returnat 수정해주기!
+
+    // Servelet request Body 가져오는 법 공부!
     // user 현재 cnt - 1 , 컵 상태 - return 으로 반환
     @PutMapping("/cupReturn")
     @ResponseBody
     public QrDto.ForCupStateResponseDto CupReturnAPI(HttpServletRequest request, HttpServletResponse response)
     {
         String msgBody = "";
+
+        // Load CupId From Servlet
         Object cupId = request.getAttribute("goodAttitudeCupUid");
 
         Long GoodAttitudeCup_Uid = Long.valueOf(String.valueOf(cupId));
 
+        // Load GoodAttitudeCUp_Uid Form Servlet
+        Object Memail = request.getAttribute("mEmail");
+
+        String ManagerEmail = String.valueOf(String.valueOf(Memail));
+
+        // Print Result For Checking Success Result
         System.out.println("cupState " +  GoodAttitudeCup_Uid);
 
+        System.out.println("Manager Email : " + ManagerEmail);
+
         //컵 반환
-        qrService.cupReturnService(GoodAttitudeCup_Uid);
+        qrService.cupReturnService(GoodAttitudeCup_Uid, ManagerEmail);
 
         // 컵 반환 후 상태 체크
         Integer check = qrService.checkCupStateService(GoodAttitudeCup_Uid);
