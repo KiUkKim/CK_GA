@@ -7,8 +7,8 @@ import com.ck.reusable.springboot.domain.History.rental_history;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class RentalHistoryDto {
