@@ -51,9 +51,6 @@ public class User extends BaseTimeEntity{
     @Column(name = "total_cnt", columnDefinition = "TEXT")
     private Integer total_cnt;
 
-    @OneToOne(mappedBy = "user")
-    private UserCard userCard;
-
     //com.fasterxml.jackson.databind.JsonMappingException: Multiple back-reference properties with name 'defaultReference' 해결하기
     // 직렬화가 중복으로 일어남
     @JsonManagedReference(value = "relation-User-rental_history")
