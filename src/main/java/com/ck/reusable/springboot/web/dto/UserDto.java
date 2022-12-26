@@ -1,6 +1,7 @@
 package com.ck.reusable.springboot.web.dto;
 
 import com.ck.reusable.springboot.domain.user.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 public class UserDto {
 
+    @Schema(description = "회원가입")
     @Getter
     @Setter
     @NoArgsConstructor
