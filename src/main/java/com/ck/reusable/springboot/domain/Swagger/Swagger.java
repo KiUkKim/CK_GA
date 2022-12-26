@@ -22,6 +22,7 @@ public class Swagger {
                 .group("리유저블 앱 서비스 v1")
                 .pathsToMatch(paths)
                 .packagesToScan("com.ck")
+                .displayName("HI")
                 .build();
     }
 }
