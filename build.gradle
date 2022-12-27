@@ -55,8 +55,6 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.5'
 
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.6.5'
-
     // Sweagger-UI 설정
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
 
