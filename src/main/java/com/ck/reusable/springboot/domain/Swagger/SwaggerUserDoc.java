@@ -150,6 +150,21 @@ public class SwaggerUserDoc {
         }
     }
 
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class SwaggerEr3
+    {
+        // 관련 메시지
+        private String cupState;
+
+        @Builder
+        public SwaggerEr3(String cupState)
+        {
+            this.cupState = cupState;
+        }
+    }
+
 
     ///////////////// 토큰 관련 정보 ////////////////////////
     @Getter
@@ -162,6 +177,62 @@ public class SwaggerUserDoc {
 
         @Schema(description = "RefreshToken", allowableValues = {"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUz-이하생략"})
         private String RefreshToken;
+    }
+
+    /////////////////// CUP 관련 ////////////////////////////
+
+    // Cup 정보 받기
+    @Getter
+    @NoArgsConstructor
+    @Schema(description = "컵의 QR코드를 찍어 상태를 확인하는 Schema입니다.")
+    public static class cupState{
+
+        @Schema(description = "컵 아이디", allowableValues = {"1"})
+        @NotNull
+        private Long goodAttitudeCup_Uid;
+    }
+
+
+    // CUP 대여 확인
+    @Getter
+    @NoArgsConstructor
+    @Schema(description = "컵 대여를 위한 Schema입니다.")
+    public static class cupRentalDto{
+
+        @Schema(description = "컵 아이디", allowableValues = {"1"})
+        @NotNull
+        private Long goodAttitudeCup_Uid;
+
+        @Schema(description = "회원 번호", allowableValues = {"1"})
+        @NotNull
+        private Long userUid;
+    }
+
+    //////////////// 매장 관련 //////////////////
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class SwaggerStoreInfo
+    {
+        private Long id;
+        private double latitude;
+        private double longitude;
+        private String imageUrl;
+        private String title;
+        private String business_hours;
+        private String tag;
+
+        public SwaggerStoreInfo(Long id, double latitude, double longitude, String imageUrl, String title, String business_hours, String tag)
+        {
+            this.id = id;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.imageUrl = imageUrl;
+            this.title = title;
+            this.business_hours = business_hours;
+            this.tag = tag;
+        }
     }
 
 }

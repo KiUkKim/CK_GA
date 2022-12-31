@@ -18,7 +18,7 @@ public class StoreDto {
     {
         private Long id;
         private double latitude;
-        private double longtitude;
+        private double longitude;
         private String imageUrl;
         private String title;
         private String business_hours;
@@ -28,7 +28,7 @@ public class StoreDto {
         {
             this.id = storeInfo.getStoreId();
             this.latitude = storeInfo.getLatitude();
-            this.longtitude = storeInfo.getLongitude();
+            this.longitude = storeInfo.getLongitude();
             this.imageUrl = storeInfo.getImage_url();
             this.title = storeInfo.getTitle();
             this.business_hours = storeInfo.getBusiness_hours();

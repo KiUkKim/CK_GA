@@ -1,9 +1,11 @@
 package com.ck.reusable.springboot.domain.Swagger;
 
+import com.ck.reusable.springboot.domain.Store.StoreInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,6 +132,42 @@ public class SwaggerUserOutPutDoc {
         List<Map<String, Object>> history = new ArrayList();
 
     }
+
+
+    @Getter
+    @NoArgsConstructor
+    public static class CupStateOutput{
+        @Schema(description = "컵 상태 반환<br>대여중인 컵을 찍으면 자동 반환됩니다.", allowableValues = {"avaliable", "using", "returned", "cleanse", "loss"})
+        private String cupState;
+    }
+
+
+    ///////////////// 매장 정보 //////////////
+    @Getter
+    @NoArgsConstructor
+    public static class StoreOutPut{
+        @Schema(description = "매장 ID", allowableValues = "1")
+        private Long id;
+
+        @Schema(description = "매장 위도", allowableValues = "36.633717781404734")
+        private double latitude;
+
+        @Schema(description = "매장 경도", allowableValues = "127.45759570354707")
+        private double longtitude;
+
+        @Schema(description = "이미지 Url", allowableValues = "url.com")
+        private String imageUrl;
+
+        @Schema(description = "매장 이름", allowableValues = "왕큰손파닭")
+        private String title;
+
+        @Schema(description = "매장 영업 시간", allowableValues = "17:00~20:00")
+        private String business_hours;
+
+        @Schema(description = "매장 태그", allowableValues = "중문,많음")
+        private String tag;
+    }
+
 
 
 }

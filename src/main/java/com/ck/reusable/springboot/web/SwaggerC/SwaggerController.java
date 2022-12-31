@@ -1,6 +1,7 @@
 package com.ck.reusable.springboot.web.SwaggerC;
 
 import com.ck.reusable.springboot.domain.ErrorMessage.errorMessage;
+import com.ck.reusable.springboot.domain.Swagger.Swagger;
 import com.ck.reusable.springboot.domain.Swagger.SwaggerUserDoc;
 import com.ck.reusable.springboot.domain.Swagger.SwaggerUserOutPutDoc;
 import com.ck.reusable.springboot.domain.user.User;
@@ -37,7 +38,6 @@ public class SwaggerController {
 
     private final RentalHistoryService rentalHistoryService;
 
-    //TODO
     // 회원가입
     @Operation(summary = "Sign Up API", description = "회원가입에 필요한 API 입니다.", tags = {"User Save API"})
     @ApiResponses({
@@ -57,7 +57,6 @@ public class SwaggerController {
         return new ResponseEntity<>(er, HttpStatus.CREATED);
     }
 
-    //TODO
     // 로그인
     @Operation(summary = "Sign In API", description = "로그인에 필요한 API 입니다.", tags = {"User Save API"})
     @ApiResponses({
@@ -78,7 +77,6 @@ public class SwaggerController {
         return new ResponseEntity<>(message, headers, HttpStatus.CREATED);
     }
 
-    //TODO
     // 핸드폰 번호 인증 발송
     @Operation(summary = "Send For Validation Of Phone Number", description = "회원가입시 필요한 핸드폰 인증번호 API 입니다.", tags = {"User Save API"})
     @ApiResponses({
@@ -96,7 +94,6 @@ public class SwaggerController {
         return new ResponseEntity<>(numStr, HttpStatus.OK);
     }
 
-    //TODO
     // 이메일 중복 확인
     @Operation(summary = "Validation of Email", description = "중복된 이메일 회원 가입 방지를 위한 API", tags = {"User Save API"})
     @ApiResponses({
@@ -113,66 +110,95 @@ public class SwaggerController {
         return new ResponseEntity<>(er, HttpStatus.OK);
     }
 
-    //TODO
     // 로그인 회원 정보 확인
-    @Operation(summary = "User Info", description = "유저정보를 확인하는 API", tags = {"User Info API"})
+//    @Operation(summary = "User Info", description = "유저정보를 확인하는 API", tags = {"User API"})
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
+//                    schema = @Schema(implementation = SwaggerUserOutPutDoc.userInfoDto.class))),
+//            @ApiResponse(responseCode = "401", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
+//            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
+//    })
+//    @GetMapping("/api/user/userInfo")
+//    public Object swaggerUserDto()
+//    {
+//        /*
+//        유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력
+//         */
+//        UserDto.ForUserTokenResponseDto forUserTokenResponseDto = new UserDto.ForUserTokenResponseDto();
+//        User user = userService.searchUserByEmail2("12345@naver.com");
+//
+//        BeanUtils.copyProperties(user, forUserTokenResponseDto);
+//
+//        forUserTokenResponseDto.setUId(user.getMember_seq());
+//        /*
+//
+//         */
+//        Long user_id = userService.userIdByEmail("12345@naver.com");
+//
+//        //TODO
+//        // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
+//
+//        // 여러 개 정보들을 한곳에 합쳐주기 위함
+//        List<Map<String, Object>> nowRental = rentalHistoryService.InfoNowRentalHistory(user_id);
+//
+//        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id);
+//
+//        /*
+//        담겨온 정보 list에 넣어줌
+//         */
+//        forUserTokenResponseDto.setRentalStatus(nowRental);
+//
+//        forUserTokenResponseDto.setHistory(pastRental);
+//
+//        return new ResponseEntity<>(forUserTokenResponseDto, HttpStatus.OK);
+//    }
+
+
+    // 컵 상태 체크 확인
+    @Operation(summary = "CupState Info", description = "컵 상태를 확인하는 API", tags = {"Manager API"})
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = SwaggerUserOutPutDoc.userInfoDto.class))),
+            @ApiResponse(responseCode = "200", description = "OK<br>대여중인 컵의 경우 자동반납 처리 됩니다.", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = SwaggerUserOutPutDoc.CupStateOutput.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
     })
-    @GetMapping("/api/user/userInfo")
-    public Object swaggerUserDto()
+    @PutMapping("/api/manager/CupStateCheck")
+    public Object CupApi(@RequestBody SwaggerUserDoc.cupState dto)
     {
-        /*
-        유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력
-         */
-        UserDto.ForUserTokenResponseDto forUserTokenResponseDto = new UserDto.ForUserTokenResponseDto();
-        User user = userService.searchUserByEmail2("12345@naver.com");
-
-        BeanUtils.copyProperties(user, forUserTokenResponseDto);
-
-        forUserTokenResponseDto.setUId(user.getMember_seq());
-        /*
-
-         */
-        Long user_id = userService.userIdByEmail("12345@naver.com");
-
-        //TODO
-        // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
-
-        // 여러 개 정보들을 한곳에 합쳐주기 위함
-        List<Map<String, Object>> nowRental = rentalHistoryService.InfoNowRentalHistory(user_id);
-
-        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id);
-
-        /*
-        담겨온 정보 list에 넣어줌
-         */
-        forUserTokenResponseDto.setRentalStatus(nowRental);
-
-        forUserTokenResponseDto.setHistory(pastRental);
-
-        return new ResponseEntity<>(forUserTokenResponseDto, HttpStatus.OK);
+        SwaggerUserDoc.SwaggerEr3 er = SwaggerUserDoc.SwaggerEr3.builder().cupState("available").build();
+        return new ResponseEntity<>(er, HttpStatus.OK);
     }
 
 
-    //TODO
-    // 컵 상태 체크 확인
-
-
-    //TODO
     // 컵 대여
+    @Operation(summary = "Cup Rental", description = "컵 대여 API", tags = {"Manager API"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK<br>컵 대여 결과가 표시됩니다.", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = SwaggerUserOutPutDoc.CupStateOutput.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
+    })
+    @PutMapping("/api/manager/CupRental")
+    public Object CupRental(@RequestBody SwaggerUserDoc.cupRentalDto dto)
+    {
+        SwaggerUserDoc.SwaggerEr3 er = SwaggerUserDoc.SwaggerEr3.builder().cupState("using").build();
+        return new ResponseEntity<>(er, HttpStatus.OK);
+    }
 
-    //TODO
-    // 컵 반납
 
-    //TODO
-    // AccessToken 재발급
-
-    //TODO
     // 매장정보
-
+    @Operation(summary = "Store Info", description = "매장 정보 API", tags = {"User API"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK<br>해당 형식에서는 한 개의 매장만 보여줍니다.", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = SwaggerUserOutPutDoc.StoreOutPut.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping("/api/user/storeInfo")
+    public Object storeInfo()
+    {
+        SwaggerUserDoc.SwaggerStoreInfo swaggerStoreInfo = new SwaggerUserDoc.SwaggerStoreInfo(1L, 36.633717781404734, 127.45759570354707, "url.com", "왕큰손파닭", "17:00~20:00", "중문,많음");
+        return new ResponseEntity<>(swaggerStoreInfo, HttpStatus.OK);
+    }
 
 }
