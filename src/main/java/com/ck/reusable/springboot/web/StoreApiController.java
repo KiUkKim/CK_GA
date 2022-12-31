@@ -18,7 +18,7 @@ public class StoreApiController {
 
     private final StoreService storeService;
 
-    @GetMapping("/manager/storeInfo")
+    @GetMapping("/user/storeInfo")
     public Map<String, Object> PrintStoreAllInfo()
     {
         Map<String, Object> StoreMap = new HashMap<>();
