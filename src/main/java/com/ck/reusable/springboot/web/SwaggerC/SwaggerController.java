@@ -110,48 +110,48 @@ public class SwaggerController {
         return new ResponseEntity<>(er, HttpStatus.OK);
     }
 
-    // 로그인 회원 정보 확인
-//    @Operation(summary = "User Info", description = "유저정보를 확인하는 API", tags = {"User API"})
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
-//                    schema = @Schema(implementation = SwaggerUserOutPutDoc.userInfoDto.class))),
-//            @ApiResponse(responseCode = "401", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
-//            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
-//    })
-//    @GetMapping("/api/user/userInfo")
-//    public Object swaggerUserDto()
-//    {
-//        /*
-//        유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력
-//         */
-//        UserDto.ForUserTokenResponseDto forUserTokenResponseDto = new UserDto.ForUserTokenResponseDto();
-//        User user = userService.searchUserByEmail2("12345@naver.com");
-//
-//        BeanUtils.copyProperties(user, forUserTokenResponseDto);
-//
-//        forUserTokenResponseDto.setUId(user.getMember_seq());
-//        /*
-//
-//         */
-//        Long user_id = userService.userIdByEmail("12345@naver.com");
-//
-//        //TODO
-//        // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
-//
-//        // 여러 개 정보들을 한곳에 합쳐주기 위함
-//        List<Map<String, Object>> nowRental = rentalHistoryService.InfoNowRentalHistory(user_id);
-//
-//        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id);
-//
-//        /*
-//        담겨온 정보 list에 넣어줌
-//         */
-//        forUserTokenResponseDto.setRentalStatus(nowRental);
-//
-//        forUserTokenResponseDto.setHistory(pastRental);
-//
-//        return new ResponseEntity<>(forUserTokenResponseDto, HttpStatus.OK);
-//    }
+    //로그인 회원 정보 확인
+    @Operation(summary = "User Info", description = "유저정보를 확인하는 API", tags = {"User API"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = SwaggerUserOutPutDoc.userInfoDto.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping("/api/user/userInfo")
+    public Object swaggerUserDto()
+    {
+        /*
+        유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력
+         */
+        UserDto.ForUserTokenResponseDto forUserTokenResponseDto = new UserDto.ForUserTokenResponseDto();
+        User user = userService.searchUserByEmail2("123456@naver.com");
+
+        BeanUtils.copyProperties(user, forUserTokenResponseDto);
+
+        forUserTokenResponseDto.setUId(user.getMember_seq());
+        /*
+
+         */
+        Long user_id = userService.userIdByEmail("123456@naver.com");
+
+        //TODO
+        // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
+
+        // 여러 개 정보들을 한곳에 합쳐주기 위함
+        List<Map<String, Object>> nowRental = rentalHistoryService.InfoNowRentalHistory(user_id);
+
+        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id);
+
+        /*
+        담겨온 정보 list에 넣어줌
+         */
+        forUserTokenResponseDto.setRentalStatus(nowRental);
+
+        forUserTokenResponseDto.setHistory(pastRental);
+
+        return new ResponseEntity<>(forUserTokenResponseDto, HttpStatus.OK);
+    }
 
 
     // 컵 상태 체크 확인

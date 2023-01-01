@@ -6,9 +6,6 @@ import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @OpenAPIDefinition(
         info = @Info(title = "충북대학교 GA팀 - 리유저블 앱 REST API 명세서",
                 description = "충북대학교 리유저블 앱 서비스 REST API 명세서 [해당 문서 주소의 api 적힌 부분은 구별을 위한 것이니 사용하실 때, 제외하고 사용 ] <br><br>"
