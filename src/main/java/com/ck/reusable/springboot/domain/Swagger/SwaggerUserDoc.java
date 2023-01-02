@@ -67,9 +67,9 @@ public class SwaggerUserDoc {
     @NoArgsConstructor
     public static class SwaggerPhoneInputDto{
 
-        @Schema(description = "전화번호", allowableValues = {"010-0000-0000"})
+        @Schema(description = "전화번호", allowableValues = {"01000000000"})
         @NotNull
-        private String to;
+        private String tel;
 
     }
 
