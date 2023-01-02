@@ -27,7 +27,7 @@ public class jwtCookieUtilService {
             ResponseCookie cookie = ResponseCookie.from(key.getKey(), key.getValue().toString())
                     .sameSite("None")
                     .secure(true)
-                    .maxAge(Math.toIntExact(600000 * 2))
+                    .maxAge(Math.toIntExact(60000 * 2))
                     .path("/")
                     .build();
             response.addHeader("Set-Cookie", cookie.toString() + ";HttpOnly");

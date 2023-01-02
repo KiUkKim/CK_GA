@@ -111,7 +111,6 @@ public class jwtService{
                 .withIssuer(jwtProperties.TOKEN_ISSUR)
                 .withExpiresAt(new Date(System.currentTimeMillis() + (jwtProperties.EXPIRATION_REFRESH_TIME)))
                 .sign(algorithm);
-
     }
 
     public RefreshJwt getRefreshToken(Long user_id)

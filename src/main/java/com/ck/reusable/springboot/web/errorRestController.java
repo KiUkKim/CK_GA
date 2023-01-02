@@ -9,6 +9,7 @@ import com.ck.reusable.springboot.domain.user.RefreshJwt;
 import com.ck.reusable.springboot.domain.user.RefreshJwtRepository;
 import com.ck.reusable.springboot.service.user.jwtService;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
+import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
 public class errorRestController {
+    private final jwtCookieUtilService jwtCookieUtilService;
 
     private JwtProperties jwtProperties;
 
@@ -126,6 +130,16 @@ public class errorRestController {
         if (refreshToken.startsWith("Bearer")) {
             refreshToken = refreshToken.replace(jwtProperties.TOKEN_PREFIX, "");
 
+            Timestamp getCreated = jwtRepository.findDateTime(refreshToken);
+
+            if(jwtService.checkRefreshTokenValidity(getCreated))
+            {
+                System.out.println("================================리프레시 토큰 만료");
+                System.out.println("요청 url : /RefreshTokenExpire/Y");
+                jwtCookieUtilService.goForward("/RefreshTokenExpire/Y", request, response);
+                return null;
+            }
+
             RefreshJwt refreshJwt = jwtService.getRefreshToken(refreshToken);
 
             String newJwtToken = jwtService.NewJwtToken(refreshJwt);
@@ -143,7 +157,14 @@ public class errorRestController {
             return jsonObject;
         }
 
-        return null;
+        else{
+            System.out.println("토큰이 없음 비로그인 사용자 요청");
+            jwtCookieUtilService.goForward("/tokenExpire/X", request, response);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("message", "올바르지 않은 토큰 값");
+
+            return jsonObject;
+        }
     }
 
 }
