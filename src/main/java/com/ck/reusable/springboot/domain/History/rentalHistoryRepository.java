@@ -2,6 +2,7 @@ package com.ck.reusable.springboot.domain.History;
 
 import com.ck.reusable.springboot.domain.Cup.Cup;
 import com.ck.reusable.springboot.domain.user.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -51,9 +52,9 @@ public interface rentalHistoryRepository extends JpaRepository<rental_history, L
     // 과거 대여 정보관련 쿼리
 //    "SELECT st.title AS rentalStore , rh.rentalAT AS rentalAt FROM rental_history rh Inner JOIN StoreInfo st ON " +
 //            "rh.rentalStore.storeId = st.storeId AND rh.user.member_seq = :user_id AND rh.checkValue = 1
-    @Query("SELECT st.title AS rentalStore , rh.rentalAT AS rentalAt, re.returnAT AS returnAt, re.returnStore.title AS returnStore FROM rental_history rh Inner JOIN StoreInfo st ON " +
+    @Query("SELECT st.title AS rentalStore , rh.rentalAT AS rentalAt, re.returnAT AS returnAt, re.returnStore.title AS returnStore, rh.rental_id AS id FROM rental_history rh Inner JOIN StoreInfo st ON " +
             "rh.rentalStore.storeId = st.storeId AND rh.user.member_seq = :user_id AND rh.checkValue = 1 JOIN return_history re ON re.rentalH.rental_id = rh.rental_id")
-    List<Map<String, Object>> rhPastHistory(@Param("user_id") Long user_id);
+    List<Map<String, Object>> rhPastHistory(@Param("user_id") Long user_id, Pageable pageable);
 
 
     // Query For Return Logic

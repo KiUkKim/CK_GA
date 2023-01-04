@@ -7,6 +7,7 @@ import com.ck.reusable.springboot.domain.History.return_history;
 import com.ck.reusable.springboot.web.dto.RentalHistoryDto;
 import com.ck.reusable.springboot.web.dto.ReturnHistoryDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +42,9 @@ public class RentalHistoryService {
 
     // 과거 대여기록 정보
     @Transactional
-    public List<Map<String, Object>> InfoPastRentalHistory(Long user_id)
+    public List<Map<String, Object>> InfoPastRentalHistory(Long user_id, Pageable pageable)
     {
-        return rentalRepository.rhPastHistory(user_id);
+        return rentalRepository.rhPastHistory(user_id, pageable);
     }
 
 }

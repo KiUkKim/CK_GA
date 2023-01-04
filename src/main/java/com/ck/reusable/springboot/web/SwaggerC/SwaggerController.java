@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -140,15 +142,10 @@ public class SwaggerController {
 
         // 여러 개 정보들을 한곳에 합쳐주기 위함
         List<Map<String, Object>> nowRental = rentalHistoryService.InfoNowRentalHistory(user_id);
-
-        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id);
-
         /*
         담겨온 정보 list에 넣어줌
          */
         forUserTokenResponseDto.setRentalStatus(nowRental);
-
-        forUserTokenResponseDto.setHistory(pastRental);
 
         return new ResponseEntity<>(forUserTokenResponseDto, HttpStatus.OK);
     }
@@ -199,6 +196,49 @@ public class SwaggerController {
     {
         SwaggerUserDoc.SwaggerStoreInfo swaggerStoreInfo = new SwaggerUserDoc.SwaggerStoreInfo(1L, 36.633717781404734, 127.45759570354707, "url.com", "왕큰손파닭", "17:00~20:00", "중문,많음");
         return new ResponseEntity<>(swaggerStoreInfo, HttpStatus.OK);
+    }
+
+    // 대여기록 pagination
+    @Operation(summary = "Rental History Info", description = "과거 대여 기록 정보 API<br>Parameter의 sort \"string\"값을 \"id\"로 변경해야 정상작동합니다.  ", tags = {"User API"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK<br>해당 형식에서는 일부 목록만 보여줍니다.", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = SwaggerUserOutPutDoc.userHistroyInfoDto.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping("/api/user/userHistoryInfo")
+    public Object HistoryInfo(@RequestParam(name = "size") Integer size, @RequestParam(name = "page") Integer page, Pageable pageable)
+    {
+        /*
+        유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력
+         */
+        UserDto.ForUserHistoryResponseDto historyResponseDto = new UserDto.ForUserHistoryResponseDto();
+
+        User user = userService.searchUserByEmail2("123456@naver.com");
+
+        System.out.println(user);
+
+        BeanUtils.copyProperties(user, historyResponseDto);
+
+        historyResponseDto.setUId(user.getMember_seq());
+
+        /*
+
+         */
+        Long user_id = userService.userIdByEmail("123456@naver.com");
+
+        //TODO
+        // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
+
+        // 여러 개 정보들을 한곳에 합쳐주기 위함
+        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id, pageable);
+
+        /*
+        담겨온 정보 list에 넣어줌
+         */
+        historyResponseDto.setHistory(pastRental);
+
+        return new ResponseEntity<>(historyResponseDto, HttpStatus.OK);
     }
 
 }

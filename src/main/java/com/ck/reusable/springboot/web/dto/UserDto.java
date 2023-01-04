@@ -169,9 +169,37 @@ public class UserDto {
         // 대여기록, 과거 대여 기록 관련 부분.
         List<Map<String, Object>> rentalStatus = new ArrayList();
 
-        List<Map<String, Object>> history = new ArrayList();
+//        List<Map<String, Object>> history = new ArrayList();
 
         public ForUserTokenResponseDto(User entity) {
+            this.name = entity.getName();
+            this.tel = entity.getTel();
+            this.email = entity.getEmail();
+            this.now_cnt = entity.getNow_cnt();
+            this.total_cnt = entity.getTotal_cnt();
+        }
+    }
+
+    // User 과거 정보 출력
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class ForUserHistoryResponseDto {
+        /*
+        회원 정보
+         */
+        private Long uId;
+        private String name;
+        private String tel;
+        private String email;
+        private Integer now_cnt;
+        private Integer total_cnt;
+
+        // 과거 대여 기록 관련 부분.
+
+        List<Map<String, Object>> history = new ArrayList();
+
+        public ForUserHistoryResponseDto(User entity) {
             this.name = entity.getName();
             this.tel = entity.getTel();
             this.email = entity.getEmail();

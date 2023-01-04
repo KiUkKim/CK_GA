@@ -10,9 +10,11 @@ import com.ck.reusable.springboot.service.user.UserVertificationService;
 import com.ck.reusable.springboot.web.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +112,8 @@ public class UserApiController {
         UserDto.ForUserTokenResponseDto forUserTokenResponseDto = new UserDto.ForUserTokenResponseDto();
         User user = userService.searchUserByEmail2(principal.getName());
 
+        System.out.println(user);
+
         BeanUtils.copyProperties(user, forUserTokenResponseDto);
 
         forUserTokenResponseDto.setUId(user.getMember_seq());
@@ -125,22 +129,52 @@ public class UserApiController {
         // 여러 개 정보들을 한곳에 합쳐주기 위함
         List<Map<String, Object>> nowRental = rentalHistoryService.InfoNowRentalHistory(user_id);
 
-        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id);
+//        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id);
 
         /*
         담겨온 정보 list에 넣어줌
          */
         forUserTokenResponseDto.setRentalStatus(nowRental);
 
-        forUserTokenResponseDto.setHistory(pastRental);
+//        forUserTokenResponseDto.setHistory(pastRental);
 
         return forUserTokenResponseDto;
     }
 
+    @GetMapping("/user/userHistoryInfo")
+    public UserDto.ForUserHistoryResponseDto searchLoginUserHistory(Principal principal, Pageable pageable, @RequestParam(name = "size") Integer size, @RequestParam(name = "page") Integer page)
+    {
+        /*
+        유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력
+         */
+        UserDto.ForUserHistoryResponseDto historyResponseDto = new UserDto.ForUserHistoryResponseDto();
 
-    //TODO
-    // 반납 API 기능 추가
+        User user = userService.searchUserByEmail2(principal.getName());
 
+        System.out.println(user);
+
+        BeanUtils.copyProperties(user, historyResponseDto);
+
+        historyResponseDto.setUId(user.getMember_seq());
+
+        /*
+
+         */
+        Long user_id = userService.userIdByEmail(principal.getName());
+
+        //TODO
+        // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
+
+        // 여러 개 정보들을 한곳에 합쳐주기 위함
+        List<Map<String, Object>> pastRental = rentalHistoryService.InfoPastRentalHistory(user_id, pageable);
+
+        /*
+        담겨온 정보 list에 넣어줌
+         */
+        historyResponseDto.setHistory(pastRental);
+
+        return historyResponseDto;
+    }
 
 
 }

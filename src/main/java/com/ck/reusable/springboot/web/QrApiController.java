@@ -211,7 +211,7 @@ public class QrApiController {
         // 정상적으로 반납이 이루어졌으면 2
         if(check == 2)
         {
-            cupStateResponseDto.setCupState("returned");
+            cupStateResponseDto.setCupState("returning");
             return cupStateResponseDto;
         }
 
