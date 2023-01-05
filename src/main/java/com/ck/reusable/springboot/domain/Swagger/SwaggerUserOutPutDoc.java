@@ -171,25 +171,6 @@ public class SwaggerUserOutPutDoc {
         /*
         회원 정보
          */
-
-        @Schema(description = "유저 식별 번호", allowableValues = {"1"})
-        private Long uId;
-
-        @Schema(description = "유저 이름", allowableValues = {"김아무개"})
-        private String name;
-
-        @Schema(description = "유저 번호", allowableValues = {"010-0000-0000"})
-        private String tel;
-
-        @Schema(description = "유저 이메일", allowableValues = {"xxxx@xxxx.com"})
-        private String email;
-
-        @Schema(description = "현재 대여중인 컵 개수", allowableValues = {"1"})
-        private Integer now_cnt;
-
-        @Schema(description = "총 빌린 컵 개수", allowableValues = {"1"})
-        private Integer total_cnt;
-
         @Schema(description = "과거 대여 기록", allowableValues = {"1"})
         List<Map<String, Object>> history = new ArrayList();
 

@@ -149,14 +149,6 @@ public class UserApiController {
          */
         UserDto.ForUserHistoryResponseDto historyResponseDto = new UserDto.ForUserHistoryResponseDto();
 
-        User user = userService.searchUserByEmail2(principal.getName());
-
-        System.out.println(user);
-
-        BeanUtils.copyProperties(user, historyResponseDto);
-
-        historyResponseDto.setUId(user.getMember_seq());
-
         /*
 
          */

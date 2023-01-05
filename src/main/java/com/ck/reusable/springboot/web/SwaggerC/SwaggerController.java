@@ -214,17 +214,6 @@ public class SwaggerController {
          */
         UserDto.ForUserHistoryResponseDto historyResponseDto = new UserDto.ForUserHistoryResponseDto();
 
-        User user = userService.searchUserByEmail2("123456@naver.com");
-
-        System.out.println(user);
-
-        BeanUtils.copyProperties(user, historyResponseDto);
-
-        historyResponseDto.setUId(user.getMember_seq());
-
-        /*
-
-         */
         Long user_id = userService.userIdByEmail("123456@naver.com");
 
         //TODO
