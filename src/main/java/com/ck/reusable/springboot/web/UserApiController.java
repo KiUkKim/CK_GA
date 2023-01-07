@@ -147,6 +147,7 @@ public class UserApiController {
                 if(rentalDate.isBefore(today))
                 {
                     user.setBanUser(1);
+                    forUserTokenResponseDto.setBanUser(1);
                     break;
                 }
             }
@@ -179,30 +180,6 @@ public class UserApiController {
          */
         return pastRental;
     }
-
-    @GetMapping("/user/userTest")
-    public List<rental_history> testL(Principal principal)
-    {
-        User user = userService.searchUserByEmail2(principal.getName());
-
-        System.out.println(user.getBanUser());
-
-        Long user_id = userService.userIdByEmail(principal.getName());
-        // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
-
-        System.out.println(user_id);
-
-        // 여러 개 정보들을 한곳에 합쳐주기 위함
-        List<rental_history> dateDto = rentalHistoryService.CheckDateService(user_id);
-
-        for(int i = 0; i < dateDto.size(); i++)
-        {
-            System.out.println(dateDto.get(i).getRentalAT());
-        }
-
-        return dateDto;
-    }
-
 
     ///////////////// Clear API ///////////////////////
     /////////////// 나중에 삭제해주기 ////////////////
