@@ -212,8 +212,6 @@ public class SwaggerController {
         /*
         유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력
          */
-        UserDto.ForUserHistoryResponseDto historyResponseDto = new UserDto.ForUserHistoryResponseDto();
-
         Long user_id = userService.userIdByEmail("123456@naver.com");
 
         //TODO
@@ -225,9 +223,8 @@ public class SwaggerController {
         /*
         담겨온 정보 list에 넣어줌
          */
-        historyResponseDto.setHistory(pastRental);
 
-        return new ResponseEntity<>(historyResponseDto, HttpStatus.OK);
+        return new ResponseEntity<>(pastRental, HttpStatus.OK);
     }
 
 }

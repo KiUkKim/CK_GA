@@ -79,4 +79,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Long returnStoreInfo(@Param("email") String email);
 
 
+    //////////////////////// 나중에 삭제되어야 하는 부분 ////////////////////
+    // 유저 찾기
+    @Query("SELECT u FROM User u")
+    List<User> findAllUser();
+
 }

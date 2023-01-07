@@ -99,6 +99,7 @@ public class UserDto {
         private String password;
         private Integer now_cnt;
         private Integer total_cnt;
+        private Integer banUser;
 
         public ForUserListResponseDto(User user) {
             this.name = user.getName();
@@ -108,6 +109,7 @@ public class UserDto {
             this.password = user.getPassword();
             this.now_cnt = user.getNow_cnt();
             this.total_cnt = user.getNow_cnt();
+            this.banUser = user.getBanUser();
         }
 
         public User toEntity2() {
@@ -119,6 +121,7 @@ public class UserDto {
                     .password(password)
                     .now_cnt(now_cnt)
                     .total_cnt(total_cnt)
+                    .banUser(banUser)
                     .build();
         }
     }
@@ -165,6 +168,7 @@ public class UserDto {
         private String email;
         private Integer now_cnt;
         private Integer total_cnt;
+        private Integer banUser;
 
         // 대여기록, 과거 대여 기록 관련 부분.
         List<Map<String, Object>> rentalStatus = new ArrayList();
@@ -177,6 +181,7 @@ public class UserDto {
             this.email = entity.getEmail();
             this.now_cnt = entity.getNow_cnt();
             this.total_cnt = entity.getTotal_cnt();
+            this.banUser = entity.getBanUser();
         }
     }
 
@@ -188,6 +193,19 @@ public class UserDto {
 
         // 과거 대여 기록 관련 부분.
         List<Map<String, Object>> history = new ArrayList();
+    }
+
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class ForTestReseponseDto{
+        private LocalDateTime rentalAT;
+
+        private Long rental_id;
+
+        private Long user_id;
+
     }
 
 }

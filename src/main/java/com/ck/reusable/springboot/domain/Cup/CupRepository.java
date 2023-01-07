@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface CupRepository extends JpaRepository<Cup, Long> {
 
     /*
@@ -26,5 +28,10 @@ public interface CupRepository extends JpaRepository<Cup, Long> {
     @Query("SELECT c From Cup c WHERE c.goodAttitudeCup_Uid = :goodAttitudeCup_Uid")
     Cup cupReturn(@Param("goodAttitudeCup_Uid") Long goodAttitudeCup_Uid);
 
+
+    //////////////// 나중에 삭제되어야 할 부분 ////////////////////////////
+    //////////////// 초기화를 위해서 넣어둠 ///////////////////////////////
+    @Query("SELECT c FROM Cup c")
+    List<Cup> findAllCup();
 
 }

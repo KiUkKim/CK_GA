@@ -124,6 +124,9 @@ public class SwaggerUserOutPutDoc {
         @Schema(description = "총 빌린 컵 개수", allowableValues = {"1"})
         private Integer total_cnt;
 
+        @Schema(description = "해당 유정 락 여부 [0 - 사용 가능 계정, 1 - 사용 불가능 계정( 일정시간 지난 미반납 컵 보유 중)", allowableValues = {"0"})
+        private Integer banUser;
+
         // 대여기록, 과거 대여 기록 관련 부분.
         @Schema(description = "현재 대여 기록", allowableValues = {"1"})
         List<Map<String, Object>> rentalStatus = new ArrayList();

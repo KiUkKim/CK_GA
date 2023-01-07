@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -60,4 +61,16 @@ public interface rentalHistoryRepository extends JpaRepository<rental_history, L
     // Query For Return Logic
     @Query("SELECT rh FROM rental_history rh WHERE rh.checkValue = 0 AND rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid")
     rental_history RentalHistoryLogic(@Param("goodAttitudeCup_Uid") Long goodAttitudeCup_Uid);
+
+
+    // 아직 반납안된 컵의 대여시간을 따지기 위함
+//    @Query("SELECT rh FROM rental_history rh INNER JOIN Cup c ON c.cupState = 1 AND c.goodAttitudeCup_Uid = rh.cup.goodAttitudeCup_Uid where rh.user.member_seq = :user_id")
+    @Query("SELECT rh FROM rental_history rh WHERE rh.user.member_seq = :user_id and rh.checkValue = 0 and rh.cup.cupState = 1")
+    List<rental_history> CheckCupRentalTime(Long user_id);
+
+
+    /////////////////////// 추후에 삭제되어야 하는 부분 /////////////////////////////
+    @Modifying
+    @Query("UPDATE rental_history rh SET rh.checkValue = 2 WHERE rh.checkValue = 0")
+    void findAllZeroCup();
 }

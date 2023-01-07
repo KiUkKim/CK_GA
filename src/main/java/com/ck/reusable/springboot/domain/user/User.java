@@ -6,6 +6,9 @@ import com.ck.reusable.springboot.domain.Store.StoreInfo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
+@DynamicUpdate
 @Table(name="Member")
 public class User extends BaseTimeEntity{
     @Id
@@ -51,6 +55,10 @@ public class User extends BaseTimeEntity{
     @Column(name = "total_cnt", columnDefinition = "TEXT")
     private Integer total_cnt;
 
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer banUser;
+
     //com.fasterxml.jackson.databind.JsonMappingException: Multiple back-reference properties with name 'defaultReference' 해결하기
     // 직렬화가 중복으로 일어남
     @JsonManagedReference(value = "relation-User-rental_history")
@@ -63,7 +71,7 @@ public class User extends BaseTimeEntity{
     private StoreInfo storeInfo;
 
     @Builder
-    public User(String name, String email, String tel, String password, String roles, Integer now_cnt, Integer total_cnt, List<rental_history> rental_histories)
+    public User(String name, String email, String tel, String password, String roles, Integer now_cnt, Integer total_cnt, List<rental_history> rental_histories, Integer banUser)
     {
         this.name = name;
         this.email = email;
@@ -73,6 +81,7 @@ public class User extends BaseTimeEntity{
         this.now_cnt = now_cnt;
         this.total_cnt = total_cnt;
         this.rental_histories = rental_histories;
+        this.banUser = banUser;
     }
 
     public void addRole(String role)

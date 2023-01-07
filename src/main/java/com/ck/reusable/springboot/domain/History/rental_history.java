@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Entity
+@Setter // 나중에 삭제해야함 테스트용때문에 넣어둠
 @Getter
 @Table(name="rental_history")
 public class rental_history {
@@ -41,7 +42,7 @@ public class rental_history {
     //com.fasterxml.jackson.databind.JsonMappingException: Multiple back-reference properties with name 'defaultReference' 해결하기
     // 직렬화가 중복으로 일어남
     // value 값으로 관계 나타내주기!! (security 시 발생 )
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     @JsonBackReference(value = "relation-User-rental_history")
     private User user;
@@ -53,10 +54,6 @@ public class rental_history {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rentalStore_Id")
     private StoreInfo rentalStore;
-//
-//    @OneToOne(mappedBy = "rentalH")
-//    private return_history returnH;
-
 
     @Builder
     public rental_history(LocalDateTime rentalAT, Cup cup, User user, StoreInfo store, Integer checkValue)

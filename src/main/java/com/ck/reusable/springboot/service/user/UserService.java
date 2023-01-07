@@ -39,6 +39,7 @@ public class UserService {
         listResponseDto.setRoles("ROLE_USER");
         listResponseDto.setNow_cnt(0);
         listResponseDto.setTotal_cnt(0);
+        listResponseDto.setBanUser(0);
         listResponseDto.setPassword(bCryptPasswordEncoder.encode(forUserDto.getPasswd()));
 
         Assert.assertNotNull(listResponseDto.getPassword(), "Password is not null");
@@ -131,15 +132,10 @@ public class UserService {
     }
 
 
-    /*
-    반납 처리 자동 연결 부분
-     */
-//    // Repository 처리 해주기!! ( User - now_cnt 감소, Cup - user 연결 해제! , 상태전환)
-//    @Transactional
-//    public void UserReturn(Long goodAttitudeCup_Uid)
-//    {
-//
-//    }
-
-
+    //////////////////////////////// 나중에 삭제해주어야 함/////////////////////////////
+    @Transactional
+    public List<User> findUserAll()
+    {
+        return userRepository.findAllUser();
+    }
 }

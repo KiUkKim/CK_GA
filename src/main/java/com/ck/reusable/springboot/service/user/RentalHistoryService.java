@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +46,21 @@ public class RentalHistoryService {
     public List<Map<String, Object>> InfoPastRentalHistory(Long user_id, Pageable pageable)
     {
         return rentalRepository.rhPastHistory(user_id, pageable);
+    }
+
+    @Transactional
+    public List<rental_history> CheckDateService(Long user_id)
+    {
+        return rentalRepository.CheckCupRentalTime(user_id);
+    }
+
+
+    ////////////////////// 삭제되어야 할 부분 ////////////////////////////
+    ///////////////////// 테스트 용임 ///////////////////////////////////
+    @Transactional
+    public void checkZeroCup()
+    {
+        rentalRepository.findAllZeroCup();
     }
 
 }
