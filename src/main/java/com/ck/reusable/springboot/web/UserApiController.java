@@ -129,7 +129,7 @@ public class UserApiController {
         // rental_history 부분 ,, 현재 대여 기록 뽑아오는 것과, 과거(반납된 부분) 기록 뽑아 오는 것 고민하기!
 
         // 현재 벤 유저가 아니면 대여한 컵을 기준으로 따져주기
-        if(user.getBanUser() == 0)
+        if(!user.getBanUser())
         {
             // TODO
             // 대여기록 비교해서 벤 유저 인지 파악하기
@@ -146,8 +146,8 @@ public class UserApiController {
 
                 if(rentalDate.isBefore(today))
                 {
-                    user.setBanUser(1);
-                    forUserTokenResponseDto.setBanUser(1);
+                    user.setBanUser(true);
+                    forUserTokenResponseDto.setBanUser(true);
                     break;
                 }
             }
@@ -197,7 +197,7 @@ public class UserApiController {
         for(int i = 0; i < user.size(); i++)
         {
             user.get(i).setNow_cnt(0);
-            user.get(i).setBanUser(0);
+            user.get(i).setBanUser(false);
         }
 
         // 컵 상태 초기화

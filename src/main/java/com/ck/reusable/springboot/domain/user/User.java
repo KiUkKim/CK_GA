@@ -56,8 +56,8 @@ public class User extends BaseTimeEntity{
     private Integer total_cnt;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
-    private Integer banUser;
+    @ColumnDefault("false")
+    private Boolean banUser;
 
     //com.fasterxml.jackson.databind.JsonMappingException: Multiple back-reference properties with name 'defaultReference' 해결하기
     // 직렬화가 중복으로 일어남
@@ -71,7 +71,7 @@ public class User extends BaseTimeEntity{
     private StoreInfo storeInfo;
 
     @Builder
-    public User(String name, String email, String tel, String password, String roles, Integer now_cnt, Integer total_cnt, List<rental_history> rental_histories, Integer banUser)
+    public User(String name, String email, String tel, String password, String roles, Integer now_cnt, Integer total_cnt, List<rental_history> rental_histories, Boolean banUser)
     {
         this.name = name;
         this.email = email;

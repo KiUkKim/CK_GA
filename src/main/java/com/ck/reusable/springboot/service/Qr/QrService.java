@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -65,7 +66,6 @@ public class QrService {
 
         rentalHistoryService.saveReturnHistory(responseDto);
 
-        
         // 이외 옵션 지정
 
         // checkvalue = 1로 변경
@@ -79,8 +79,9 @@ public class QrService {
         // user now_cnt 감소
         user.setNow_cnt(user.getNow_cnt() - 1);
 
-        cup.setCupState(2);
+        System.out.println("user cnt : "  + user.getNow_cnt());
 
+        cup.setCupState(2);
     }
 
 
@@ -112,5 +113,46 @@ public class QrService {
         }
 
         return "";
+    }
+
+
+    /// 계정 락 해제 여부
+    @Transactional
+    public void unLockUserService(Long goodAttitudeCup_Uid){
+        // 만약 해당 컵의 유저가 계정 락된 상태라면, 미반납 컵을 체크한 후, 금지 풀어주기
+        // 수정 필요
+        User user = rentalHistoryRepository.SelectUser(goodAttitudeCup_Uid);
+
+        if(user.getBanUser() == true)
+        {
+            int timeout_cnt = 0;
+
+            Long user_id = user.getMember_seq();
+
+            List<rental_history> date = rentalHistoryService.CheckDateService(user_id);
+
+            // 대여 시간이 지난 컵을 몇개 가지고 있는지 체크
+            for(int i = 0; i < date.size(); i++)
+            {
+                LocalDateTime today = LocalDateTime.now();
+
+                LocalDateTime rentalDate = date.get(i).getRentalAT();
+
+                rentalDate = rentalDate.plusMinutes(10);
+
+                if(rentalDate.isBefore(today))
+                {
+                    timeout_cnt++;
+                }
+            }
+            System.out.println("timeout_cnt : " + timeout_cnt);
+            // 만약 미반납컵이 1개 미만이라면 벤 풀어주기
+            if(timeout_cnt <= 1)
+            {
+                user.setBanUser(false);
+            }
+
+            System.out.println("unlockUser check : " + user.getBanUser());
+        }
     }
 }

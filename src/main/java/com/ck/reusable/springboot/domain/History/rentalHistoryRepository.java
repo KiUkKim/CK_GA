@@ -69,6 +69,11 @@ public interface rentalHistoryRepository extends JpaRepository<rental_history, L
     List<rental_history> CheckCupRentalTime(Long user_id);
 
 
+    // 아직 반납안된 컵의 개수를 따지기 위함 ( 유저 벤 해지를 위함)
+    @Query("SELECT count (rh) FROM rental_history rh WHERE rh.checkValue = 0 and rh.user.member_seq = :user_id")
+    Integer CheckUnReturnCup(Long user_id);
+
+
     /////////////////////// 추후에 삭제되어야 하는 부분 /////////////////////////////
     @Modifying
     @Query("UPDATE rental_history rh SET rh.checkValue = 2 WHERE rh.checkValue = 0")

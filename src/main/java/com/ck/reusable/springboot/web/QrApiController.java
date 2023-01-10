@@ -2,6 +2,7 @@ package com.ck.reusable.springboot.web;
 
 import com.ck.reusable.springboot.domain.Cup.CupRepository;
 import com.ck.reusable.springboot.domain.Store.StoreInfoRepository;
+import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.service.Qr.QrService;
 import com.ck.reusable.springboot.service.user.CupService;
@@ -10,6 +11,8 @@ import com.ck.reusable.springboot.service.user.UserService;
 import com.ck.reusable.springboot.web.dto.QrDto;
 import com.ck.reusable.springboot.web.dto.RentalHistoryDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -82,19 +85,21 @@ public class QrApiController {
 
     @PutMapping("/manager/CupRental")
     @ResponseBody
-    public QrDto.ForCupStateResponseDto cupRentalResponse(@RequestBody QrDto.ForCupRentalResponseDto forCupRentalResponseDto, Principal principal)
+    public Object cupRentalResponse(@RequestBody QrDto.ForCupRentalResponseDto forCupRentalResponseDto, Principal principal)
     {
         // 매장 직원 메일
         String ManagerEmail = principal.getName();
+
+        // user를 받아옴
+        User user = userService.searchUserByEmail2(principal.getName());
 
         // DTO 입력 부분
         Long cupUid = forCupRentalResponseDto.getGoodAttitudeCup_Uid();
         Long userUid = forCupRentalResponseDto.getUserUid();
 
         String userEmail = userRepository.findEmailByUser_id(userUid);
-
         // 깔끔한 고객 출력을 원함 -> email -> 이름으로 출력
-        String name = userRepository.PrintUserName(userUid);
+//        String name = userRepository.PrintUserName(userUid);
 
         // Check Cup State
         Integer check = qrService.checkCupStateService(cupUid);
@@ -104,15 +109,25 @@ public class QrApiController {
 
         String msg = qrService.FormatCupState(check);
 
-        /*
-        cupState 에 따른 구분 ( 0 : 대여가능, 1 : 대여중, 2: 반납 , 3: 세척 )
-         */
-
-        //TODO
         // 컵 상태 반환 - cupstate dto 형식으로 -- 2022 10/01 완료
         QrDto.ForCupStateResponseDto responseMessageDto = new QrDto.ForCupStateResponseDto();
         String message = "";
 
+        // 현재 고객이 벤 유저라면 대여 불가능
+        if(user.getBanUser())
+        {
+            msg = "사용할 수 없는 계정입니다.";
+
+            message = msg;
+            responseMessageDto.setCupState(message);
+
+            return new ResponseEntity<>(responseMessageDto, HttpStatus.FORBIDDEN);
+        }
+
+
+        /*
+        cupState 에 따른 구분 ( 0 : 대여가능, 1 : 대여중, 2: 반납 , 3: 세척 )
+         */
         if(check == 0)
         {
             if(nowCnt < 2)
@@ -122,8 +137,6 @@ public class QrApiController {
 
 
                 nowCnt = userService.UserCupNowCnt(userEmail);
-
-
                 /*
                 // Rental history Logic
                  */
@@ -144,7 +157,7 @@ public class QrApiController {
 //                message = name + "고객님의 대여가 정상적으로 이루어졌습니다. 현재 대여 컵 개수는 " + nowCnt + "개 입니다.";
                 message = "using";
                 responseMessageDto.setCupState(message);
-                return  responseMessageDto;
+                return new ResponseEntity<>(responseMessageDto, HttpStatus.OK);
             }
             else if(nowCnt >= 2)
             {
@@ -156,7 +169,7 @@ public class QrApiController {
                 message = msg;
                 responseMessageDto.setCupState(message);
 
-                return responseMessageDto;
+                return new ResponseEntity<>(responseMessageDto, HttpStatus.NOT_ACCEPTABLE);
             }
         }
 
@@ -202,6 +215,9 @@ public class QrApiController {
 
         //컵 반환
         qrService.cupReturnService(GoodAttitudeCup_Uid, ManagerEmail);
+
+        // 컵 반환 후 해당 유저의 락 해제 여부 체크
+        qrService.unLockUserService(GoodAttitudeCup_Uid);
 
         // 컵 반환 후 상태 체크
         Integer check = qrService.checkCupStateService(GoodAttitudeCup_Uid);

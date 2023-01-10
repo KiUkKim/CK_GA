@@ -54,6 +54,13 @@ public class RentalHistoryService {
         return rentalRepository.CheckCupRentalTime(user_id);
     }
 
+    // 현재 미반납 된 컵 개수를 따지기 위함
+    @Transactional
+    Integer CupReturnCountService(Long user_id)
+    {
+        return rentalRepository.CheckUnReturnCup(user_id);
+    }
+
 
     ////////////////////// 삭제되어야 할 부분 ////////////////////////////
     ///////////////////// 테스트 용임 ///////////////////////////////////

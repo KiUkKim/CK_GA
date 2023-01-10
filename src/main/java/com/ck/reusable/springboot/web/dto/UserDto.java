@@ -99,7 +99,7 @@ public class UserDto {
         private String password;
         private Integer now_cnt;
         private Integer total_cnt;
-        private Integer banUser;
+        private Boolean banUser;
 
         public ForUserListResponseDto(User user) {
             this.name = user.getName();
@@ -168,7 +168,7 @@ public class UserDto {
         private String email;
         private Integer now_cnt;
         private Integer total_cnt;
-        private Integer banUser;
+        private Boolean banUser;
 
         // 대여기록, 과거 대여 기록 관련 부분.
         List<Map<String, Object>> rentalStatus = new ArrayList();

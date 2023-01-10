@@ -39,7 +39,7 @@ public class UserService {
         listResponseDto.setRoles("ROLE_USER");
         listResponseDto.setNow_cnt(0);
         listResponseDto.setTotal_cnt(0);
-        listResponseDto.setBanUser(0);
+        listResponseDto.setBanUser(false);
         listResponseDto.setPassword(bCryptPasswordEncoder.encode(forUserDto.getPasswd()));
 
         Assert.assertNotNull(listResponseDto.getPassword(), "Password is not null");
