@@ -28,7 +28,7 @@ public interface rentalHistoryRepository extends JpaRepository<rental_history, L
     // 컵 상태 return 으로 변경 , 유저 상태 now_cnt - 1 , rental_history - return at 현재 시간으로 받기
     @Modifying(clearAutomatically = true)
     @Query("update rental_history rh set rh.checkValue = 1" +
-            "WHERE rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid")
+            "WHERE rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid and rh.checkValue = 0")
     void RentalReturnQuery(@Param("goodAttitudeCup_Uid") Long goodAttitudeCup_Uid);
 
     @Modifying

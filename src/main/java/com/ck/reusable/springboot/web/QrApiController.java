@@ -105,7 +105,7 @@ public class QrApiController {
         Integer check = qrService.checkCupStateService(cupUid);
 
         // Cup 개수 초과인지 확인
-        Integer nowCnt = userService.UserCupNowCnt(userEmail);
+        Integer nowCnt = user.getNow_cnt();
 
         String msg = qrService.FormatCupState(check);
 
@@ -135,8 +135,8 @@ public class QrApiController {
                 userService.UserRental(userEmail, cupUid);
                 // user_rental history 연결
 
+//                nowCnt = userService.UserCupNowCnt(userEmail);
 
-                nowCnt = userService.UserCupNowCnt(userEmail);
                 /*
                 // Rental history Logic
                  */
