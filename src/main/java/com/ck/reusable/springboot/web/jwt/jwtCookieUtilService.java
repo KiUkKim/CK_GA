@@ -27,7 +27,7 @@ public class jwtCookieUtilService {
             ResponseCookie cookie = ResponseCookie.from(key.getKey(), key.getValue().toString())
                     .sameSite("None")
                     .secure(true)
-                    .maxAge(Math.toIntExact(60000 * 2))
+                    .maxAge(Math.toIntExact(600000 * 12))
                     .path("/")
                     .build();
             response.addHeader("Set-Cookie", cookie.toString() + ";HttpOnly");
@@ -44,7 +44,8 @@ public class jwtCookieUtilService {
 
         // 오늘 날짜에 토큰 기한 계산
 //        timestamp2 = timestamp2.plusDays(14);
-        timestamp2 = timestamp2.plusMinutes(5);
+//        timestamp2 = timestamp2.plusMinutes(5);
+        timestamp2 = timestamp2.plusDays(1);
 
         // 오늘 날짜 계산
         LocalDateTime today = LocalDateTime.now();

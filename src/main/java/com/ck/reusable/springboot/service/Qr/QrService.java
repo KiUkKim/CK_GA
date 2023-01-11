@@ -60,6 +60,7 @@ public class QrService {
         responseDto.setReturnAt(LocalDateTime.now());
 
         System.out.println("GA : " + goodAttitudeCup_Uid);
+
         responseDto.setRentalId(rentalHistoryRepository.RentalHistoryLogic(goodAttitudeCup_Uid));
 
         System.out.println(rentalHistoryRepository.RentalHistoryLogic(goodAttitudeCup_Uid));
