@@ -115,7 +115,7 @@ public class SwaggerController {
     //로그인 회원 정보 확인
     @Operation(summary = "User Info", description = "유저정보를 확인하는 API", tags = {"User API"})
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "200", description = "OK <br> (false -> 정상 계정, true -> 락 계정 )", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = SwaggerUserOutPutDoc.userInfoDto.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))

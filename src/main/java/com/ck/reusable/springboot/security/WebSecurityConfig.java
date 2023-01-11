@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtService)) // crossorigin(인증 필요x ) , 시큐리티 필터에 인증이 필요할 때 등록
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, jwtRepository, jwtService, jwtCookieUtilService)) // Authorization Filter
                 .authorizeRequests() // 요청에 대한 사용권한 체크
-                .antMatchers("/","/auth/**","/login", "/save", "/emailValidate", "/phoneCheck", "/refreshTokenRenew", "/swagger-ui.html", "/swagger-ui/index.html", "/swagger-ui/**",
+                .antMatchers("/","/auth/**","/login", "/save", "/emailValidate", "/phoneCheck", "/refreshTokenRenew", "/swagger-ui/**", "/v3/api-docs/**",
                         "/api/**", "/userClear")////이 링크들은
                 .permitAll()///허용한다
                 .antMatchers("/user/**")
