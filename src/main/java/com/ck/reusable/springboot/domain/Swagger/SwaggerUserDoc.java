@@ -208,6 +208,23 @@ public class SwaggerUserDoc {
         private Long userUid;
     }
 
+    @Getter
+    @NoArgsConstructor
+    @Schema(description = "컵 반납을 위한 Schema입니다.")
+    public static class cupReturnDto{
+
+        @Schema(description = "컵 아이디", allowableValues = {"1"})
+        @NotNull
+        private Long goodAttitudeCup_Uid;
+
+        @Schema(description = "회원 번호", allowableValues = {"1"})
+        @NotNull
+        private Long userUid;
+    }
+
+
+
+
     //////////////// 매장 관련 //////////////////
 
     @Getter

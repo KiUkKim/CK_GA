@@ -179,7 +179,16 @@ public class SwaggerUserOutPutDoc {
 
     }
 
-
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class cupLostDto{
+        /*
+        회원 정보
+         */
+        @Schema(description = "반환 메시지", allowableValues = {"1번 컵의 분실처리가 정상적으로 이루어졌습니다."})
+        private String msg;
+    }
 
 
 }
