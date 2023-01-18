@@ -294,7 +294,7 @@ public class QrApiController {
 
         msg = cupUid + "번 컵의 분실처리가 정상적으로 이루어지지 않았습니다.";
 
-        return new ResponseEntity<>(msg, HttpStatus.OK);
+        return new ResponseEntity<>(msg, HttpStatus.NOT_ACCEPTABLE);
 
 
     }

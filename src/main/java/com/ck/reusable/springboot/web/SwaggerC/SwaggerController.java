@@ -227,4 +227,22 @@ public class    SwaggerController {
         return new ResponseEntity<>(pastRental, HttpStatus.OK);
     }
 
+
+    // 컵 분실 API
+    // 대여기록 pagination
+    @Operation(summary = "Cup Lost Info", description = "컵 분실 API", tags = {"User API"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK 정상반납", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = SwaggerUserOutPutDoc.cupLostDto.class))),
+            @ApiResponse(responseCode = "403", description = "Unauthorized <br>비인가된 사용자", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "406", description = "컵의 사용자가 아닙니다.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
+    })
+    @GetMapping("/api/user/cupLost")
+    public Object cupLost(@RequestBody SwaggerUserDoc.cupReturnDto cupReturnDto)
+    {
+        String msg = "1번 컵의 분실처리가 정상적으로 이루어졌습니다.";
+
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    }
 }
