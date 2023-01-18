@@ -6,7 +6,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.ck.reusable.springboot.domain.user.RefreshJwtRepository;
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
-import com.ck.reusable.springboot.security.PrincipalDetails;
+import com.ck.reusable.springboot.security.UserSecurity.PrincipalDetails;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
 import com.ck.reusable.springboot.service.user.jwtService;

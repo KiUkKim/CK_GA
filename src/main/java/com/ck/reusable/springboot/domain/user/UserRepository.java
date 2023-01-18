@@ -48,14 +48,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.now_cnt FROM User u WHERE u.email = :email")
     Integer UserNowCnt(@Param("email") String email);
 
-    //TODO
     // 컵 대여 부분
     // 생각해야 하는 부문 : user의 now_cnt 증가, total_cnt 증가 - 해당 유저와 rental history 연결
     @Modifying
     @Query("update User u set u.now_cnt = u.now_cnt + 1, u.total_cnt = u.total_cnt + 1 WHERE u.email = :email")
     Integer UpdateUserCnt(@Param("email") String email);
 
-    //TODO
     // 컵 대여 부분
     // 출력을 위한 User 이름 반환
     @Query("SELECT u.name FROM User u WHERE u.email = :email")
@@ -71,13 +69,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.now_cnt = u.now_cnt - 1 WHERE u.email = :email")
     void updateReturnUserCnt(@Param("email") String email);
 
-
     /*
     매장 정보 반환
      */
     @Query("SELECT u.storeInfo.storeId FROM User u WHERE u.email = :email")
     Long returnStoreInfo(@Param("email") String email);
-
 
     //////////////////////// 나중에 삭제되어야 하는 부분 ////////////////////
     // 유저 찾기

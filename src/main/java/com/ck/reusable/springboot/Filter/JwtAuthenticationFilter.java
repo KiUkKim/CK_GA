@@ -3,7 +3,7 @@ package com.ck.reusable.springboot.Filter;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.ck.reusable.springboot.domain.user.RefreshJwt;
 import com.ck.reusable.springboot.domain.user.User;
-import com.ck.reusable.springboot.security.PrincipalDetails;
+import com.ck.reusable.springboot.security.UserSecurity.PrincipalDetails;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
 import com.ck.reusable.springboot.service.user.jwtService;
@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
 //
                System.out.println("authenticationToken : " + authenticationToken);
-               Assert.notNull(authenticationToken, "autenticationToken is must not be null");
+               Assert.notNull(authenticationToken, "authenticationToken is must not be null");
 
                // CustomUserDetail의 loadUserByUsername() 함수가 실행되고 정상적인 결과면 authentication이 반한됨.
                // DB에 있는 email과 password 비교

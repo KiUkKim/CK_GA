@@ -1,4 +1,4 @@
-package com.ck.reusable.springboot.security;
+package com.ck.reusable.springboot.security.UserSecurity;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

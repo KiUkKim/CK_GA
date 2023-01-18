@@ -18,6 +18,7 @@ public class RentalHistoryDto {
     @NoArgsConstructor
     public static class RentalHistoryResponseDto {
         private LocalDateTime rentalAt;
+        private LocalDateTime returnAT;
         private User userUid;
         private Cup goodAttitudeCup_Uid;
         private StoreInfo storeId;
@@ -27,6 +28,7 @@ public class RentalHistoryDto {
         public rental_history toEntity() {
             return rental_history.builder()
                     .rentalAT(rentalAt)
+                    .returnAT(returnAT)
                     .checkValue(checkValue)
                     .cup(goodAttitudeCup_Uid)
                     .store(storeId)

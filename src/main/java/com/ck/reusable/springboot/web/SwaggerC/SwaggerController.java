@@ -32,7 +32,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-public class SwaggerController {
+public class    SwaggerController {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -199,7 +199,7 @@ public class SwaggerController {
     }
 
     // 대여기록 pagination
-    @Operation(summary = "Rental History Info", description = "과거 대여 기록 정보 API<br>Parameter의 sort \"string\"값을 \"id\"로 변경해야 정상작동합니다.  ", tags = {"User API"})
+    @Operation(summary = "Rental History Info", description = "과거 대여 기록 정보 API<br>Parameter의 sort \"string\"값을 \"returnAt\"로 변경해야 정상작동합니다.  ", tags = {"User API"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK<br>해당 형식에서는 일부 목록만 보여줍니다.", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = SwaggerUserOutPutDoc.userHistroyInfoDto.class))),
@@ -207,7 +207,7 @@ public class SwaggerController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR", content = @Content(mediaType = "application/json"))
     })
     @GetMapping("/api/user/userHistoryInfo")
-    public Object HistoryInfo(@RequestParam(name = "size") Integer size, @RequestParam(name = "page") Integer page, Pageable pageable)
+    public Object HistoryInfo(Pageable pageable)
     {
         /*
         유저 정보 출력하는 구간 - db name != dto name -> 출력이 안되므로 seq만 다르게 뽑아서 출력

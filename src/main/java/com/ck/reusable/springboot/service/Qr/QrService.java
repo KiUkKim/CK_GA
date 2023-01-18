@@ -23,7 +23,7 @@ public class QrService {
 
     private final CupRepository cupRepository;
 
-    private final com.ck.reusable.springboot.domain.History.rentalHistoryRepository rentalHistoryRepository;
+    private final rentalHistoryRepository rentalHistoryRepository;
 
     private final StoreInfoRepository storeInfoRepository;
 
@@ -69,16 +69,24 @@ public class QrService {
 
         // 이외 옵션 지정
 
+        // checkvalue를 받아와서 0인 경우 -> user nowCnt - 1 // 3인 경우 -> 그대로 유지
+        // 미리 받아온다.
+        Integer checkRentalStatus = rentalHistoryService.CheckLostCup(goodAttitudeCup_Uid, email);
+
         // checkvalue = 1로 변경
         rentalHistoryRepository.RentalReturnQuery(goodAttitudeCup_Uid);
 
         // Load User & Cup
         // 해당 컵의 User와 Cup을 받아오기
         User user = rentalHistoryRepository.SelectUser(goodAttitudeCup_Uid);
+
         Cup cup = rentalHistoryRepository.SelectCup(goodAttitudeCup_Uid);
 
         // user now_cnt 감소
-        user.setNow_cnt(user.getNow_cnt() - 1);
+        if(checkRentalStatus == 0)
+        {
+            user.setNow_cnt(user.getNow_cnt() - 1);
+        }
 
         System.out.println("user cnt : "  + user.getNow_cnt());
 

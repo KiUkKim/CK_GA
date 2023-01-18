@@ -1,4 +1,4 @@
-package com.ck.reusable.springboot.security;
+package com.ck.reusable.springboot.security.UserSecurity;
 
 import com.ck.reusable.springboot.Filter.JwtAuthenticationFilter;
 import com.ck.reusable.springboot.Filter.JwtAuthorizationFilter;

@@ -1,4 +1,4 @@
-package com.ck.reusable.springboot.security;
+package com.ck.reusable.springboot.security.UserSecurity;
 
 import com.ck.reusable.springboot.domain.user.User;
 import lombok.Data;

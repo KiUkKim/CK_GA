@@ -28,14 +28,15 @@ public interface rentalHistoryRepository extends JpaRepository<rental_history, L
     // 컵 상태 return 으로 변경 , 유저 상태 now_cnt - 1 , rental_history - return at 현재 시간으로 받기
     @Modifying(clearAutomatically = true)
     @Query("update rental_history rh set rh.checkValue = 1" +
-            "WHERE rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid and rh.checkValue = 0")
+            "WHERE rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid and (rh.checkValue = 0 or rh.checkValue = 3)")
     void RentalReturnQuery(@Param("goodAttitudeCup_Uid") Long goodAttitudeCup_Uid);
 
     @Modifying
     @Query("update Cup c SET c.cupState = 2 where c.rental_histories = :rental_history ")
     void CupReturnQuery(rental_history rental_history);
 
-    @Query("SELECT u FROM User u,rental_history rh where rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid and u.member_seq = rh.user.member_seq")
+//    @Query("SELECT u FROM User u,rental_history rh where rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid and u.member_seq = rh.user.member_seq and rh.checkValue = 0")
+    @Query("SELECT u FROM User u inner JOIN rental_history rh ON rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid and u.member_seq = rh.user.member_seq and rh.checkValue = 1")
     User SelectUser(@Param("goodAttitudeCup_Uid") Long goodAttitudeCup_Uid);
 
     @Query("SELECT c FROM Cup c, rental_history rh where rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid " +
@@ -44,11 +45,10 @@ public interface rentalHistoryRepository extends JpaRepository<rental_history, L
 
     // 현재 대여 정보관련 쿼리
     // 쿼리 수정
-    @Query("SELECT st.title AS rentalStore, rh.rentalAT AS rentalAt FROM rental_history rh Inner JOIN StoreInfo st ON rh.rentalStore.storeId = st.storeId AND rh.user.member_seq = :user_id " +
-            "AND rh.checkValue = 0")
+    @Query("SELECT st.title AS rentalStore, rh.rentalAT AS rentalAt, rh.returnAT AS returnAT, c.goodAttitudeCup_Uid AS goodAttitudeCup_Uid FROM rental_history rh Inner JOIN StoreInfo st ON rh.rentalStore.storeId = st.storeId AND rh.user.member_seq = :user_id " +
+            "AND rh.checkValue = 0 JOIN Cup c ON c.goodAttitudeCup_Uid = rh.cup.goodAttitudeCup_Uid")
     List<Map<String, Object>> rhNowHistory(@Param("user_id") Long user_id);
-//    @Query("SELECT rh.store.title, rh.rentalAT FROM rental_history rh WHERE rh.user.member_seq = :user_id and rh.checkValue = 0")
-//    List rhNowHistory(@Param("user_id") Long user_id);
+
 
     // 과거 대여 정보관련 쿼리
 //    "SELECT st.title AS rentalStore , rh.rentalAT AS rentalAt FROM rental_history rh Inner JOIN StoreInfo st ON " +
@@ -65,7 +65,7 @@ public interface rentalHistoryRepository extends JpaRepository<rental_history, L
 
     // 아직 반납안된 컵의 대여시간을 따지기 위함
 //    @Query("SELECT rh FROM rental_history rh INNER JOIN Cup c ON c.cupState = 1 AND c.goodAttitudeCup_Uid = rh.cup.goodAttitudeCup_Uid where rh.user.member_seq = :user_id")
-    @Query("SELECT rh FROM rental_history rh WHERE rh.user.member_seq = :user_id and rh.checkValue = 0 and rh.cup.cupState = 1")
+    @Query("SELECT rh FROM rental_history rh WHERE rh.user.member_seq = :user_id and rh.checkValue = 0 and rh.cup.cupState = 1 ORDER BY rh.rentalAT")
     List<rental_history> CheckCupRentalTime(Long user_id);
 
 
@@ -74,7 +74,16 @@ public interface rentalHistoryRepository extends JpaRepository<rental_history, L
     Integer CheckUnReturnCup(Long user_id);
 
 
-    /////////////////////// 추후에 삭제되어야 하는 부분 /////////////////////////////
+    // 컵 분실시 업데이트 하는 구간
+    @Modifying
+    @Query("UPDATE rental_history rh SET rh.checkValue = 3 WHERE rh.checkValue = 0 and rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid")
+    void updateLostRH(Long goodAttitudeCup_Uid);
+
+    // 반납시 분실컵, 분실되지 않은 컵을 따지기 위함
+    @Query("SELECT rh.checkValue FROM rental_history rh WHERE rh.user.email = :email and rh.cup.goodAttitudeCup_Uid = :goodAttitudeCup_Uid")
+    Integer CheckLostCup(Long goodAttitudeCup_Uid, String email);
+
+    ////////////////////// 추후에 삭제되어야 하는 부분 /////////////////////////////
     @Modifying
     @Query("UPDATE rental_history rh SET rh.checkValue = 2 WHERE rh.checkValue = 0")
     void findAllZeroCup();

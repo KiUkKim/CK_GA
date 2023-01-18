@@ -28,8 +28,13 @@ public class rental_history {
     @JsonBackReference(value = "relation-Cup-rental_history")
     private Cup cup;
 
+    // 대여 날짜
     @Column
     private LocalDateTime rentalAT;
+
+    // 반납 기한
+    @Column
+    private LocalDateTime returnAT;
 
     // insertable 써줘야지 insert 자동으로 안함!!
 //    @Column(nullable = true, insertable = false)
@@ -56,9 +61,10 @@ public class rental_history {
     private StoreInfo rentalStore;
 
     @Builder
-    public rental_history(LocalDateTime rentalAT, Cup cup, User user, StoreInfo store, Integer checkValue)
+    public rental_history(LocalDateTime rentalAT, LocalDateTime returnAT, Cup cup, User user, StoreInfo store, Integer checkValue)
     {
         this.rentalAT = rentalAT;
+        this.returnAT = returnAT;
         this.user = user;
         this.cup = cup;
         this.rentalStore = store;

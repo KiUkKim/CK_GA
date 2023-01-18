@@ -34,4 +34,9 @@ public interface CupRepository extends JpaRepository<Cup, Long> {
     @Query("SELECT c FROM Cup c")
     List<Cup> findAllCup();
 
+    // 컵 분실 신고시 값 변경
+    @Modifying
+    @Query("update Cup c set c.cupState = 4 WHERE c.goodAttitudeCup_Uid = :goodAttitudeCup_Uid")
+    void UpdateCupLostState(@Param("goodAttitudeCup_Uid") Long goodAttitudeCup_Uid);
+
 }

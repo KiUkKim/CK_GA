@@ -131,20 +131,19 @@ public class UserApiController {
         // 현재 벤 유저가 아니면 대여한 컵을 기준으로 따져주기
         if(!user.getBanUser())
         {
-            // TODO
             // 대여기록 비교해서 벤 유저 인지 파악하기
 
             List<rental_history> date = rentalHistoryService.CheckDateService(user_id);
 
+            // TODO
+            // 수정해줘야 할 것
             for(int i = 0; i < date.size(); i++)
             {
                 LocalDateTime today = LocalDateTime.now();
 
-                LocalDateTime rentalDate = date.get(i).getRentalAT();
+                LocalDateTime renturnDate = date.get(i).getReturnAT();
 
-                rentalDate = rentalDate.plusMinutes(10);
-
-                if(rentalDate.isBefore(today))
+                if(renturnDate.isBefore(today))
                 {
                     user.setBanUser(true);
                     forUserTokenResponseDto.setBanUser(true);

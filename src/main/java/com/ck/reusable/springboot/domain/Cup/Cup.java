@@ -26,6 +26,10 @@ public class Cup extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer cupState;
 
+    // 컵 사용 횟수
+    @Column
+    private Integer CupTotalCnt;
+
     //com.fasterxml.jackson.databind.JsonMappingException: Multiple back-reference properties with name 'defaultReference' 해결하기
     // 직렬화가 중복으로 일어남
     // value 값으로 관계 나타내주기!! (security시 발생 )

@@ -35,4 +35,13 @@ public class QrDto {
         Long userUid;
         Long goodAttitudeCup_Uid;
     }
+
+    @Getter
+    @Setter
+    public static class ForCupLostResponseDto
+    {
+        Long goodAttitudeCup_Uid;
+    }
+
+
 }

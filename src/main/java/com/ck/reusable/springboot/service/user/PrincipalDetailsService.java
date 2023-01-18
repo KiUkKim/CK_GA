@@ -2,7 +2,7 @@ package com.ck.reusable.springboot.service.user;
 
 import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
-import com.ck.reusable.springboot.security.PrincipalDetails;
+import com.ck.reusable.springboot.security.UserSecurity.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
