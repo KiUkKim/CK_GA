@@ -16,6 +16,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -119,8 +123,6 @@ public class UserApiController {
         UserDto.ForUserTokenResponseDto forUserTokenResponseDto = new UserDto.ForUserTokenResponseDto();
         User user = userService.searchUserByEmail2(principal.getName());
 
-        System.out.println(user);
-
         BeanUtils.copyProperties(user, forUserTokenResponseDto);
 
         forUserTokenResponseDto.setUId(user.getMember_seq());
@@ -213,6 +215,20 @@ public class UserApiController {
         rentalHistoryService.checkZeroCup();
 
         return new ResponseEntity<>("유저, 컵, 대여 부분이 초기화 되었습니다.", HttpStatus.OK);
+    }
+
+    /////////////////////////////////////////////
+    ////////////////////////TEST/////////////////
+
+    // TEST API
+    @MessageMapping("/user/wlans08@gmail.com")
+    @SendTo("/topic/user/wlans08@gmail.com")
+    public User getUserInfo() {
+        User user = userService.findUser("wlans08@gmail.com"); // 데이터베이스에서 초기 사용자 정보를 가져옴
+
+        System.out.println(user.getName());
+
+        return user;
     }
 
 }

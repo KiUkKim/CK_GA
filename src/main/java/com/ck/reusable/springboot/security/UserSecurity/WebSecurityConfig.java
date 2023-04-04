@@ -57,14 +57,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, jwtRepository, jwtService, jwtCookieUtilService)) // Authorization Filter
                 .authorizeRequests() // 요청에 대한 사용권한 체크
                 .antMatchers("/","/auth/**","/login", "/save", "/emailValidate", "/phoneCheck", "/refreshTokenRenew", "/swagger-ui/**", "/v3/api-docs/**",
-                        "/api/**", "/userClear")////이 링크들은
+                        "/api/**", ////이 링크들은
+                        "/userClear", "/app", "/topic/**", "/A.html", "/js/**", "/user/**", "/ws/**") // 이 줄의 링크는 테스트용 추후에 삭제 필요
                 .permitAll()///허용한다
-                .antMatchers("/user/**")
+                .antMatchers("/user/1")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
                 .antMatchers("/manager/**")
                 .access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
                 .antMatchers("/admin/**")
                 .access("hasRole('ROLE_ADMIN')")
+                        .antMatchers("/rootAdmin/**")
+                        .access("hasRole('ROLE_ROOT')")
                 .anyRequest()
                 .authenticated();
 //                .permitAll();

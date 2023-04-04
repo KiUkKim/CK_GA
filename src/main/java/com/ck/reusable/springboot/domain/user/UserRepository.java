@@ -50,7 +50,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 컵 대여 부분
     // 생각해야 하는 부문 : user의 now_cnt 증가, total_cnt 증가 - 해당 유저와 rental history 연결
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("update User u set u.now_cnt = u.now_cnt + 1, u.total_cnt = u.total_cnt + 1 WHERE u.email = :email")
     Integer UpdateUserCnt(@Param("email") String email);
 

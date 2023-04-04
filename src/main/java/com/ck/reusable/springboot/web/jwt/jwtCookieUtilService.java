@@ -58,7 +58,6 @@ public class jwtCookieUtilService {
         return false;
     }
 
-
     public String getCookieValue(HttpServletRequest request, String Token_name)
     {
         Cookie cookie = WebUtils.getCookie(request, Token_name);

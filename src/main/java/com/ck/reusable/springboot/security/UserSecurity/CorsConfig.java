@@ -18,7 +18,9 @@ public class CorsConfig {
 
         config.setAllowCredentials(true); // 내 서버가 응답을 할 때 json을 자바스크립트에서 처리할 수 있게 할지 설정 ( front와 연동 시 필요 )
 
-        config.addAllowedOrigin("*"); // 모든 ip에 대한 응답을 허용
+//        config.addAllowedOrigin("*"); // 모든 ip에 대한 응답을 허용
+
+        config.addAllowedOriginPattern("*"); // addAllowedOriginPattern("*") 대신 사용
 
         config.addAllowedHeader("*"); // 모든 header에 대한 응답을 허용
 
