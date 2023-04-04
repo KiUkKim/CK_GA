@@ -11,9 +11,13 @@ import com.ck.reusable.springboot.service.Qr.QrService;
 import com.ck.reusable.springboot.service.user.CupService;
 import com.ck.reusable.springboot.service.user.RentalHistoryService;
 import com.ck.reusable.springboot.service.user.UserService;
+import com.ck.reusable.springboot.web.Test.UserWebSocketHandler;
+import com.ck.reusable.springboot.web.Test.UserWebSocketService;
+import com.ck.reusable.springboot.web.Test.WebSocketConfig;
 import com.ck.reusable.springboot.web.dto.QrDto;
 import com.ck.reusable.springboot.web.dto.RentalHistoryDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +41,9 @@ public class QrApiController {
     private final QrService qrService;
 
     private final CupService cupService;
+
+    @Autowired
+    private UserWebSocketService socketService;
 
 //    ===================== Respository
 
@@ -99,9 +106,6 @@ public class QrApiController {
         // 매장 직원 메일
         String ManagerEmail = principal.getName();
 
-        // user를 받아옴
-        User user = userService.searchUserByEmail2(principal.getName());
-
         // DTO 입력 부분
         Long cupUid = forCupRentalResponseDto.getGoodAttitudeCup_Uid();
 
@@ -110,6 +114,9 @@ public class QrApiController {
         String userEmail = userRepository.findEmailByUser_id(userUid);
         // 깔끔한 고객 출력을 원함 -> email -> 이름으로 출력
 //        String name = userRepository.PrintUserName(userUid);
+
+        // Rental user를 받아옴
+        User user = userService.searchUserByEmail2(userEmail);
 
         // Check Cup State
         Integer check = qrService.checkCupStateService(cupUid);
@@ -134,6 +141,8 @@ public class QrApiController {
             return new ResponseEntity<>(responseMessageDto, HttpStatus.FORBIDDEN);
         }
 
+
+        System.out.println(userEmail);
 
         /*
         cupState 에 따른 구분 ( 0 : 대여가능, 1 : 대여중, 2: 반납 , 3: 세척, 4: 분실, 5: 만료 )
@@ -176,6 +185,18 @@ public class QrApiController {
 //                message = name + "고객님의 대여가 정상적으로 이루어졌습니다. 현재 대여 컵 개수는 " + nowCnt + "개 입니다.";
                 message = "using";
                 responseMessageDto.setCupState(message);
+
+                System.out.println(userEmail);
+
+                // Rental user를 받아옴 (변경된 정보를 받아오기 위함 )
+//                User updateUser = userService.searchUserByEmail2(userEmail);
+
+                User updateUser = userRepository.findUserByEmail(userEmail);
+                System.out.println(updateUser.getNow_cnt());
+
+                // 변경된 정보 구독 주소로 알려주기
+                socketService.sendUpdateMessage(userEmail, updateUser);
+
                 return new ResponseEntity<>(responseMessageDto, HttpStatus.OK);
             }
             else if(nowCnt >= 2)

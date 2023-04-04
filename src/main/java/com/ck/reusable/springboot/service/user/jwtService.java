@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.ck.reusable.springboot.domain.user.RefreshJwt;
 import com.ck.reusable.springboot.domain.user.RefreshJwtRepository;
+import com.ck.reusable.springboot.domain.user.User;
 import com.ck.reusable.springboot.domain.user.UserRepository;
 import com.ck.reusable.springboot.web.jwt.JwtProperties;
 import com.ck.reusable.springboot.web.jwt.jwtCookieUtilService;
@@ -194,6 +195,22 @@ public class jwtService{
         return  request.getHeader(tokenName).replace(jwtProperties.TOKEN_PREFIX, "");
     }
 
+
+    // TODO 테스트용
+    /////////////////////////////////////////
+    public String createTokenTest(String email) {
+
+        System.out.println("TEST===============================토큰 제작시작");
+
+        Algorithm algorithm = Algorithm.HMAC256(jwtProperties.SECRET);
+
+        return JWT.create()
+                .withSubject("tokenTest")
+                .withIssuer(jwtProperties.TOKEN_ISSUR) // 토큰 유효시간 30분
+                .withExpiresAt(new Date(System.currentTimeMillis() + (jwtProperties.EXPIRATION_TIME)))
+                .withClaim("email", email)
+                .sign(algorithm);
+    }
 
 
 }
